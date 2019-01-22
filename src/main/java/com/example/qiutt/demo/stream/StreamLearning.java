@@ -1,18 +1,64 @@
-package src.main.java.com.example.qiutt.demo.stream;
+package com.example.qiutt.demo.stream;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONConverter;
+import cn.hutool.json.JSONString;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author qiutt
  * @description:no description
  * @create 2018-11-14 17:25
  */
+@Slf4j
 public class StreamLearning {
-	public static void main(String[] args) {
+
+	@Test
+	public void streamFilter() {
 		List<Integer> nums = Arrays.asList(1, 1, null, 2, 3, 4, null, 5, 6, 7, 8, 9, 10);
-		System.out.println("sum is:"+nums.stream().filter(num -> num != null).distinct().mapToInt(num -> num * 2).peek(System.out::println).skip(2).limit(4).sum());
+		log.info("sum is:"+nums.stream().filter(num -> num != null).distinct().mapToInt(num -> num * 2).peek(System.out::println).skip(2).limit(4).sum());
 	}
 
+	@Test
+	public void streamGroupBy(){
+		PayTypeDetail[] payTypeDetails=new PayTypeDetail[4];
+		payTypeDetails[0]=new PayTypeDetail(ConsumptPayType.BALANCE_CONSUMPT, BigDecimal.valueOf(1));
+		payTypeDetails[1]=new PayTypeDetail(ConsumptPayType.ALIPAY_CONSUMPT, BigDecimal.valueOf(11));
+		payTypeDetails[2]=new PayTypeDetail(ConsumptPayType.ALIPAY_CONSUMPT, BigDecimal.valueOf(22));
+		payTypeDetails[3]=new PayTypeDetail(ConsumptPayType.BALANCE_CONSUMPT, BigDecimal.valueOf(10));
+
+		List<PayTypeDetail> payTypeDetailList=Arrays.asList(payTypeDetails);
+		log.info("数据初始化（分组前）:"+ JSONUtil.toJsonStr(payTypeDetailList));
+		List<PayTypeDetail> result=new ArrayList<PayTypeDetail>();
+		//先分组
+		Map<ConsumptPayType,List<PayTypeDetail>> groupByResultMap=payTypeDetailList.stream().collect(Collectors.groupingBy(PayTypeDetail::getConsumptPayType));
+		log.info("分组后:"+ JSONUtil.toJsonStr(groupByResultMap));
+		//分组后累加，写法1
+		groupByResultMap.forEach(new BiConsumer<ConsumptPayType,List<PayTypeDetail>>(){
+			@Override
+			public void accept(ConsumptPayType consumptPayType, List<PayTypeDetail> list) {
+				BigDecimal totalAmountByType=list.stream().map(PayTypeDetail::getPayAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+				result.add(new PayTypeDetail(consumptPayType,totalAmountByType));
+			}
+		});
+		log.info("分组后累加:"+ JSONUtil.toJsonStr(result));
+		//分组后累加，写法2
+//		groupByResultMap.forEach((consumptPayType,list)->{
+//				BigDecimal totalAmountByType=list.stream().map(PayTypeDetail::getPayAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+//				result.add(new PayTypeDetail(consumptPayType,totalAmountByType));
+//		});
+//		log.info("分组后累加:"+ JSONUtil.toJsonStr(result));
+
+	}
 }
