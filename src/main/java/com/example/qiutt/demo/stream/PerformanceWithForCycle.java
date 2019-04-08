@@ -19,7 +19,7 @@ public class PerformanceWithForCycle {
 
 	@Test
 	public void  PerformanceWithForCycle(){
-		List<Integer> integers=new ArrayList<>(100000);
+		List<Integer> integers=new ArrayList<>(100000000);
 		Stopwatch stopwatch=new Stopwatch();
 		stopwatch.start();
 		for (Integer integer:integers){
@@ -29,10 +29,10 @@ public class PerformanceWithForCycle {
 		stopwatch.stop();
 		log.info("for循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
 
-		integers=new ArrayList<>(100000);
+		integers=new ArrayList<>(100000000);
 		stopwatch=new Stopwatch();
 		stopwatch.start();
-		integers.stream().map(Integer->{
+		integers.stream().parallel().map(Integer->{
 			return Integer.intValue()+1;
 		}).collect(Collectors.toList());
 		stopwatch.stop();

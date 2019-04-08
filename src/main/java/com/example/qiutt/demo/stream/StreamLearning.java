@@ -1,17 +1,16 @@
 package com.example.qiutt.demo.stream;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONConverter;
 import cn.hutool.json.JSONString;
 import cn.hutool.json.JSONUtil;
+import com.example.qiutt.demo.common.UserInfoModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -60,5 +59,25 @@ public class StreamLearning {
 //		});
 //		log.info("分组后累加:"+ JSONUtil.toJsonStr(result));
 
+	}
+
+	@Test
+	public void streamFilterWithUserInfoModel() {
+		List<UserInfoModel> userInfoModels=new ArrayList<UserInfoModel>();
+		for(int i=0;i<10;i++){
+			UserInfoModel userInfoModel=new UserInfoModel();
+			userInfoModel.setAge(RandomUtil.randomInt(10,35));
+			userInfoModels.add(userInfoModel);
+		}
+		userInfoModels.forEach(p -> {
+			log.info("用户年龄{}", p.getAge());
+		});
+		List<UserInfoModel> userInfoModelsAfterFilter=userInfoModels.stream().filter(u->{
+			return u.getAge()>20;
+		}).collect(Collectors.toList());
+
+		userInfoModelsAfterFilter.forEach(p -> {
+			log.info("过滤后用户大于20年龄，年龄{}", p.getAge());
+		});
 	}
 }
