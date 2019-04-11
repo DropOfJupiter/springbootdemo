@@ -1,5 +1,7 @@
 package com.example.qiutt.demo.callable;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.example.qiutt.demo.common.UserInfoModel;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +9,10 @@ import org.apache.catalina.User;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author qiutt
@@ -19,11 +23,11 @@ import java.util.concurrent.*;
 public class CallableMain {
 
 	public static void main(String[] args) throws ExecutionException, InterruptedException {
-		Stopwatch stopwatch=new Stopwatch();
+		Stopwatch stopwatch = new Stopwatch();
 		stopwatch.start();
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		//配置核心线程数
-		executor.setCorePoolSize(12);
+		executor.setCorePoolSize(5);
 		//配置最大线程数
 		executor.setMaxPoolSize(20);
 		//配置队列大小
@@ -36,34 +40,38 @@ public class CallableMain {
 		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		//执行初始化
 		executor.initialize();
-		List<UserInfoModel> userInfoModels=new ArrayList<>(1000000);
-		CountDownLatch countDownLatch = new CountDownLatch(userInfoModels.size());
-		for(int i=0;i<1000000;i++){
-			FutureTask<UserInfoModel> futureTask = new FutureTask<UserInfoModel>(new UserInfoThread(String.valueOf(i)));
-			executor.execute(futureTask);
-			while (futureTask.isDone()){
-				userInfoModels.add(futureTask.get());
-				countDownLatch.countDown();
+		List<Future<UserInfoModel>> userInfoModels = new CopyOnWriteArrayList<Future<UserInfoModel>>();
+		//CountDownLatch countDownLatch = new CountDownLatch(100000);
+		for (int i = 0; i < 10000000; i++) {
+			//创建线程，提交到线程池
+			Future<UserInfoModel> userInfoModel = executor.submit(new UserInfoThread(String.valueOf(i)));
+			userInfoModels.add(userInfoModel);
+			//countDownLatch.countDown();
+		}
+//		try {
+//			countDownLatch.await();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//			System.out.println("阻塞异常");
+//		}
+		/**
+		 * 如果没有如下代码。程序执行之后仍旧会有线程池里的线程处于waiting的状态
+		 */
+		//不能直接executor.shutdown();所以用这个土办法控制线程池关闭
+		AtomicInteger successCount=new AtomicInteger(0);
+		while (successCount.equals(userInfoModels.size())) {
+			for (Future<UserInfoModel> userInfoModelFuture : userInfoModels) {
+				if (userInfoModelFuture.isDone()) {
+					successCount.incrementAndGet();
+					continue;
+				} else {
+					break;
+				}
 			}
 		}
-		try {
-			countDownLatch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			System.out.println("阻塞异常");
-		}
+		executor.shutdown();
 		stopwatch.stop();
-		log.info("calleble获取[{}]的数据，耗时[{}]",userInfoModels.size(),stopwatch.elapsedTime(TimeUnit.SECONDS));
+		log.info("calleble获取[{}]的数据，耗时[{}]", userInfoModels.size(), stopwatch.elapsedTime(TimeUnit.MILLISECONDS));
 
-		stopwatch=new Stopwatch();
-		stopwatch.start();
-		List<UserInfoModel> userInfoModels1=new ArrayList<>(1000000);
-		for(int i=0;i<1000000;i++){
-			UserInfoModel userInfoModel=new UserInfoModel();
-			userInfoModel.setName(String.valueOf(i));
-			userInfoModels1.add(userInfoModel);
-		}
-		stopwatch.stop();
-		log.info("for获取[{}]的数据，耗时[{}]",userInfoModels1.size(),stopwatch.elapsedTime(TimeUnit.SECONDS));
 	}
 }
