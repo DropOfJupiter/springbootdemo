@@ -1,6 +1,5 @@
 package com.example.qiutt.demo.stream;
 
-import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -19,24 +18,24 @@ public class PerformanceWithForCycle {
 
 	@Test
 	public void  PerformanceWithForCycle(){
-		List<Integer> integers=new ArrayList<>(100000000);
-		Stopwatch stopwatch=new Stopwatch();
-		stopwatch.start();
-		for (Integer integer:integers){
-			integer=integer+1;
-			integers.add(integer);
-		}
-		stopwatch.stop();
-		log.info("for循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
-
-		integers=new ArrayList<>(100000000);
-		stopwatch=new Stopwatch();
-		stopwatch.start();
-		integers.stream().parallel().map(Integer->{
-			return Integer.intValue()+1;
-		}).collect(Collectors.toList());
-		stopwatch.stop();
-		log.info("stream循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
+//		List<Integer> integers=new ArrayList<>(100000000);
+//		Stopwatch stopwatch=new Stopwatch();
+//		stopwatch.start();
+//		for (Integer integer:integers){
+//			integer=integer+1;
+//			integers.add(integer);
+//		}
+//		stopwatch.stop();
+//		log.info("for循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
+//
+//		integers=new ArrayList<>(100000000);
+//		stopwatch=new Stopwatch();
+//		stopwatch.start();
+//		integers.stream().parallel().map(Integer->{
+//			return Integer.intValue()+1;
+//		}).collect(Collectors.toList());
+//		stopwatch.stop();
+//		log.info("stream循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
 
 	}
 }

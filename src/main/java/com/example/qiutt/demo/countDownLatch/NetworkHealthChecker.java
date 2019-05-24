@@ -1,7 +1,6 @@
 package com.example.qiutt.demo.countDownLatch;
 
 import lombok.extern.slf4j.Slf4j;
-import zipkin2.Call;
 
 import java.util.concurrent.CountDownLatch;
 

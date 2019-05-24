@@ -3,9 +3,7 @@ package com.example.qiutt.demo.callable;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.example.qiutt.demo.common.UserInfoModel;
-import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
@@ -23,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CallableMain {
 
 	public static void main(String[] args) throws ExecutionException, InterruptedException {
-		Stopwatch stopwatch = new Stopwatch();
-		stopwatch.start();
+//		Stopwatch stopwatch = new Stopwatch();
+//		stopwatch.start();
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		//配置核心线程数
 		executor.setCorePoolSize(5);
@@ -70,8 +68,8 @@ public class CallableMain {
 			}
 		}
 		executor.shutdown();
-		stopwatch.stop();
-		log.info("calleble获取[{}]的数据，耗时[{}]", userInfoModels.size(), stopwatch.elapsedTime(TimeUnit.MILLISECONDS));
+		//stopwatch.stop();
+		//log.info("calleble获取[{}]的数据，耗时[{}]", userInfoModels.size(), stopwatch.elapsedTime(TimeUnit.MILLISECONDS));
 
 	}
 }
