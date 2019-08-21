@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiya.kpy.ordct.foundation.dao.OrdctOrderDAO">
+
+	<resultMap type="com.aiya.kpy.ordct.foundation.entity.OrdctOrderEntity"
+		id="resultMap" autoMapping="true"></resultMap>
+
+	<select id="selectOrderListByOrderNos" parameterType="map"
+		resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where 1 = 1
+		<if test="orderNos != null and orderNos.size() != 0">
+			and ORDER_UUID in
+			<foreach item="item" index="index" collection="orderNos"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<update id="updateOrderStatusToPaying" parameterType="map">
+		update ORDCT_ORDER set
+		ORDER_STATUS = #{status}
+		, ROW_VERSION =
+		ROW_VERSION + 1
+		<if test="payTime != null">
+			, PAY_TIME = #{payTime}
+		</if>
+		<if test="subStatus != null">
+			, ORDER_SUB_STATUS = #{subStatus}
+		</if>
+		<if test="consumptId != null">
+			, CONSUMPT_TRAN_ID = #{consumptId}
+		</if>
+		where ID = #{id} and ROW_VERSION = #{version}
+	</update>
+
+	<select id="selectByRequest" parameterType="map" resultMap="resultMap">
+		select ORDCT_ORDER.* from ORDCT_ORDER
+		<include refid="caluseByRequest"></include>
+	</select>
+	<select id="countByRequest" parameterType="map" resultType="Integer">
+		select count(*) from ORDCT_ORDER
+		<include refid="caluseByRequest"></include>
+	</select>
+	
+	<sql id="caluseByRequest">
+		where 1=1
+	    <if test="prodType != null">
+			AND ORDCT_ORDER.ID IN (SELECT r.ORDER_ID FROM ORDCT_RESOURCE_RELATION r WHERE r.RESOURCE_TYPE = #{prodType})
+		</if>
+			<if test="resourceTypes != null &amp;&amp; resourceTypes.length &gt;0">		
+				and
+				<foreach item="item" index="index" collection="resourceTypes"
+					open="" separator=" and " close="">
+					  ORDCT_ORDER.RESOURCE_TYPES LIKE '%${item}%'  <!--原先 ：'%#{item1}%'  '%${item1}%'  -->
+				</foreach>				
+			</if>
+			<if test="resourceTypes != null &amp;&amp; resourceTypes.length &gt;0">		
+				AND ORDCT_ORDER.ID NOT IN (SELECT r.order_id FROM ORDCT_RESOURCE_RELATION r WHERE r.RESOURCE_TYPE NOT IN
+				<foreach item="item" index="index" collection="resourceTypes"
+					open="(" separator="," close=")">
+					  #{item}
+				</foreach>
+				)
+			</if>
+			<if test="orderTypeEnum != null and orderTypeEnum.size() != 0 ">
+				and ORDCT_ORDER.ORDER_TYPE in
+				<foreach collection="orderTypeEnum" close=")" open="("
+						 separator="," item="item" index="index">
+					#{item}
+				</foreach>
+			</if>
+			<if test="userId != null">
+				and ORDCT_ORDER.USER_ID = #{userId}
+			</if>
+			<if test="domainName != null">
+				and ORDCT_ORDER.DOMAIN_NAME = #{domainName}
+			</if>
+			<if test="beginDate != null and endDate != null">
+				and ORDCT_ORDER.CREATE_TIME between #{beginDate} and #{endDate}
+			</if>
+			<if test="tranType != null">
+				<choose>
+					<when test="tranType == @com.aiya.kpy.common.enums.ConsumptTranType@PAYMENT_AFTER_DELIVERRY">
+						and ORDCT_ORDER.CONSUMPT_TRAN_TYPE in ('PaymentAfterDelivery','PaymentReferenceDelivery')
+					</when>
+					<otherwise>
+						and ORDCT_ORDER.CONSUMPT_TRAN_TYPE = #{tranType}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="status != null">
+				and ORDCT_ORDER.ORDER_STATUS = #{status}
+			</if>
+			<if test="subStatusSet != null and subStatusSet.size() != 0  ">
+					and ORDCT_ORDER.ORDER_SUB_STATUS in
+					<foreach collection="subStatusSet" close=")" open="("
+						separator="," item="item" index="index">
+						#{item}
+					</foreach>
+			</if>
+			<choose>
+				<when test="orderConfirm != null and orderConfirm == @com.aiya.kpy.common.enums.OrderSubStatusEnum@WAIT_CONFIRM">
+					and ORDCT_ORDER.ORDER_SUB_STATUS = #{orderConfirm}
+				</when>
+				<otherwise>
+					and ORDCT_ORDER.ORDER_SUB_STATUS != ('WaitConfirm')
+				</otherwise>
+			</choose>
+			<if test="field != null and keyword != null">
+				<if test="field == 'orderNo'">
+					and ORDCT_ORDER.ORDER_UUID like concat('%', #{keyword}, '%')
+				</if>
+				<if test="field == 'userName' and userIds != null and userIds.size() != 0">
+					and ORDCT_ORDER.USER_ID in
+					<foreach collection="userIds" open="(" close=")" separator=","
+						item="item" index="index">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="orderBy != null and orderType == 'ASC'">
+				<if test="orderBy == 'createTime'">
+					order by ORDCT_ORDER.CREATE_TIME asc
+				</if>
+				<if test="orderBy == 'payTime'">
+					order by ORDCT_ORDER.PAY_TIME asc
+				</if>
+			</if>
+			<if test="orderBy != null and orderType == 'DESC'">
+				<if test="orderBy == 'createTime'">
+					order by ORDCT_ORDER.CREATE_TIME desc
+				</if>
+				<if test="orderBy == 'payTime'">
+					order by ORDCT_ORDER.PAY_TIME desc
+				</if>
+			</if>
+			<if test="orderBy == null">
+				order by ORDCT_ORDER.CREATE_TIME desc
+			</if>
+	</sql>
+
+	<select id="selectByOrderIds" parameterType="map" resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where
+		ORDER_STATUS = #{status}
+		<if test="orderIds != null &amp;&amp; orderIds.size() != 0">
+			and ID in
+			<foreach collection="orderIds" close=")" open="("
+				separator="," index="index" item="orderId">
+				#{orderId}
+			</foreach>
+		</if>
+		<if test="orderType != null">
+			and ORDER_TYPE = #{orderType}
+		</if>
+		order by CREATE_TIME desc
+	</select>
+
+	<select id="selectByPage" parameterType="map" resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where USER_ID = #{userId}
+		<if test="invoiceStatus != null">
+			and ORDER_INVOICE_STATUS = #{invoiceStatus}
+		</if>
+		<if test="status != null &amp;&amp; status.size() != 0">
+			and ORDER_STATUS in
+			<foreach collection="status" close=")" index="index" item="item"
+				open="(" separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="selectOrderByOrderUUIDs" parameterType="map"
+		resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where USER_ID = #{userId}
+		and ORDER_SUB_STATUS
+		in ('UnPaid', 'Paying', 'PaidFail')
+		<if test="orderUUIDs != null &amp;&amp; orderUUIDs.size() != 0">
+			and ORDER_UUID in
+			<foreach collection="orderUUIDs" close=")" index="index"
+				item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<update id="updateOrderStatus" parameterType="map">
+		update ORDCT_ORDER
+		set ORDER_STATUS = #{status},
+		ORDER_SUB_STATUS =
+		#{subStatus},
+		ROW_VERSION = ROW_VERSION + 1
+		<if test="refundStatus != null">
+			,REFUND_STATUS = #{refundStatus}
+		</if>
+		<if test="notifyTime != null">
+			, PRODUCT_NOTIFY_TIME = #{notifyTime}
+		</if>
+		<if test="prodExpireTime != null">
+			, PROD_EXPIRE_TIME = #{prodExpireTime}
+		</if>
+		<if test="failMsg != null">
+			, ORDER_FAIL_MSG = #{failMsg}
+		</if>
+		where ID = #{id} and ROW_VERSION = #{version}
+	</update>
+
+	<update id="paySuccessUpdateOrderStatus" parameterType="map">
+		update ORDCT_ORDER
+		set ORDER_STATUS = #{status},
+		ORDER_SUB_STATUS = #{subStatus},
+		PAY_TIME = #{payTime},
+		ROW_VERSION = ROW_VERSION + 1
+		<if test="refundStatus != null">
+			,REFUND_STATUS = #{refundStatus}
+		</if>
+		<if test="notifyTime != null">
+			, PRODUCT_NOTIFY_TIME = #{notifyTime}
+		</if>
+		<if test="prodExpireTime != null">
+			, PROD_EXPIRE_TIME = #{prodExpireTime}
+		</if>
+		<if test="failMsg != null">
+			, ORDER_FAIL_MSG = #{failMsg}
+		</if>
+		where ID = #{id} and ROW_VERSION = #{version}
+	</update>
+
+
+
+	<select id="selectNotInvoiceOrderByCondition" parameterType="map"
+		resultMap="resultMap">
+		select *from ORDCT_ORDER
+		where USER_ID = #{userId} and DOMAIN_NAME =
+		#{domainName} and ORDER_STATUS
+		='Success' and ORDER_INVOICE_STATUS =
+		'NotInvoiced'
+		<if test="resourceType != null">
+			and RESOURCE_TYPE = #{resourceType}
+		</if>
+		<if test="beginDate != null">
+			AND PAY_TIME &gt;= #{beginDate}
+		</if>
+		<if test="endDate != null">
+			AND PAY_TIME &lt;= #{endDate}
+		</if>
+		<if test="keyword != null &amp;&amp; filId != null">
+			<if test="filId == 'orderuuid'">
+				AND ORDER_UUID = #{keyword}
+			</if>
+		</if>
+		AND PAY_TIME &lt;= #{limitData}
+		<if test="orderBy != null and orderType == 'ASC'">
+			<if test="orderBy == 'payTime'">
+				order by PAY_TIME asc
+			</if>
+		</if>
+		<if test="orderBy != null and orderType == 'DESC'">
+			<if test="orderBy == 'payTime'">
+				order by PAY_TIME desc
+			</if>
+		</if>
+		<if test="orderType == null">
+			order by PAY_TIME desc
+		</if>
+	</select>
+
+	<select id="selectCountByRequest" parameterType="map"
+		resultType="Integer">
+		select count(ID) from ORDCT_ORDER
+		where USER_ID = #{userId} and
+		DOMAIN_NAME = #{domainName} and ORDER_STATUS
+		='Success' and
+		ORDER_INVOICE_STATUS = 'NotInvoiced'
+		<if test="resourceType != null">
+			and RESOURCE_TYPE = #{resourceType}
+		</if>
+		<if test="beginDate != null">
+			AND PAY_TIME &gt;= #{beginDate}
+		</if>
+		<if test="endDate != null">
+			AND PAY_TIME &lt;= #{endDate}
+		</if>
+		<if test="keyword != null &amp;&amp; field != null">
+			<if test="field == 'orderuuid'">
+				AND ORDER_UUID = #{keyword}
+			</if>
+		</if>
+		AND PAY_TIME &lt;= #{limitData}
+		<if test="orderBy != null and orderType == 'ASC'">
+			<if test="orderBy == 'payTime'">
+				order by PAY_TIME asc
+			</if>
+		</if>
+		<if test="orderBy != null and orderType == 'DESC'">
+			<if test="orderBy == 'payTime'">
+				order by PAY_TIME desc
+			</if>
+		</if>
+		<if test="orderType == null">
+			order by PAY_TIME desc
+		</if>
+	</select>
+
+	<update id="rollbackOrder" parameterType="map">
+		update ORDCT_ORDER
+		set
+		ORDER_STATUS = #{status},
+		ORDER_SUB_STATUS =
+		#{subStatus},
+		ROW_VERSION =
+		ROW_VERSION + 1,
+		CONSUMPT_TRAN_ID = #{consumptId},
+		PAY_PRICE =
+		#{payPrice}
+		where ID = #{id} and ROW_VERSION =
+		#{version}
+	</update>
+
+	<select id="selectRenewOrderByResourceUUID" parameterType="map"
+		resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where ORDER_TYPE = #{type}
+		<if test="resourceUUIDs != null and resourceUUIDs.size() != 0">
+			and RESOURCE_UUID in
+			<foreach collection="resourceUUIDs" close=")" index="index"
+				item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		<if test="status != null">
+			and ORDER_STATUS = #{status}
+		</if>
+		<if test="expireDate != null">
+			and PROD_EXPIRE_TIME &gt;= #{expireDate}
+		</if>
+		ORDER BY CREATE_TIME DESC;
+	</select>
+
+	<select id="selectByLimiDate" parameterType="map" resultMap="resultMap">
+		select * from ORDCT_ORDER
+		where RESOURCE_UUID = #{resourceUUID}
+		and
+		CREATE_TIME &lt;= #{limitDate}
+		and ORDER_STATUS = #{status}
+		and ORDER_TYPE in ('ChangeProductSpec',
+		'RenewProduct')
+	</select>
+
+
+	<select id="selectByOrderIdsAndTypes" parameterType="map" resultMap="resultMap">
+		select * from ORDCT_ORDER where
+		ORDER_STATUS = #{status}
+		<if test="orderIds != null and orderIds.size() != 0">
+			and ID in
+			<foreach collection="orderIds" close=")" open="("
+					 separator="," index="index" item="orderId">
+				#{orderId}
+			</foreach>
+		</if>
+		<if test="orderTypes != null and orderTypes.size() !=0 ">
+			and ORDER_TYPE in
+			<foreach collection="orderTypes" close=")" open="("
+				separator="," index="index" item="orderType">
+				#{orderType}
+			</foreach>
+		</if>
+		order by CREATE_TIME desc
+	</select>
+
+	<select id="countByUserIdAndTypes" parameterType="map"
+		resultType="java.lang.Integer">
+		select count(*) from ORDCT_ORDER where USER_ID=#{userId}
+		<if test="orderTypes != null and orderTypes.size() !=0 ">
+			and ORDER_TYPE in
+			<foreach collection="orderTypes" close=")" open="("
+				separator="," index="index" item="orderType">
+				#{orderType}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="countByUserIdExcludeTryout" parameterType="map"
+		resultType="java.lang.Integer">
+		select count(*) from ORDCT_ORDER ord
+		JOIN ORDCT_RESOURCE_RELATION own
+		ON ord.ID = own.ORDER_ID AND own.RESOURCE_TYPE = #{resourceType}
+		where ord.USER_ID=#{userId} and own.RESOURCE_TYPE=#{resourceType}
+		and ord.ORDER_TYPE in
+		<foreach collection="orderTypes" open="(" close=")" index="index"
+			item="item" separator=",">
+			#{item}
+		</foreach>
+		and ORDER_STATUS in
+		<foreach collection="orderStatus" open="(" close=")" index="index"
+			item="item" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="selectByOrderNos" parameterType="map" resultMap="resultMap">
+		select * from ORDCT_ORDER where 1 = 1
+		<if test="orderNos != null and orderNos.size() !=0 ">
+			and ORDER_UUID in
+			<foreach collection="orderNos" close=")" open="("
+					 separator="," index="index" item="item">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="selectCanPayOrderByNosWithLock" parameterType="map" resultMap="resultMap">
+		<![CDATA[
+		BEGIN ;
+		select * from ORDCT_ORDER
+		where 1 = 1
+		and ORDER_SUB_STATUS
+		in ('UnPaid', 'Paying')
+		<if test="orderNos != null and orderNos.size() !=0 ">
+			and ORDER_UUID in
+			<foreach collection="orderNos" close=")" open="("
+					 separator="," index="index" item="item">
+				#{item}
+			</foreach>
+		</if>
+		for update;]]>
+	</select>
+
+	<select id="selectCountwaitPaymentOrder" parameterType="map" resultType="Integer">
+		select COUNT(ID) from ORDCT_ORDER where 1 = 1
+		<if test="displayStatus != null and displayStatus.size() != 0  ">
+			and ORDER_SUB_STATUS in
+			<foreach collection="displayStatus" close=")" open="("
+					 separator="," item="item" index="index">
+				#{item}
+			</foreach>
+		</if>
+		<if test="userId != null">
+			and USER_ID = #{userId}
+		</if>
+	</select>
+    <select id="selectWaitPaymentOrder" resultType="com.aiya.kpy.ordct.foundation.entity.OrdctOrderEntity">
+        select * from ORDCT_ORDER where 1 = 1
+        <if test="displayStatus != null and displayStatus.size() != 0  ">
+            and ORDER_SUB_STATUS in
+            <foreach collection="displayStatus" close=")" open="("
+                     separator="," item="item" index="index">
+                #{item}
+            </foreach>
+        </if>
+        <if test="userId != null">
+            and USER_ID = #{userId}
+        </if>
+    </select>
+
+    <update id="orderCancelUpdate" parameterType="map">
+		update ORDCT_ORDER
+		set ORDER_STATUS = #{status},
+		ORDER_SUB_STATUS =
+		#{subStatus},
+		ROW_VERSION = ROW_VERSION + 1
+		<if test="refundStatus != null">
+			,REFUND_STATUS = #{refundStatus}
+		</if>
+		<if test="payPrice != null">
+			,PAY_PRICE = #{payPrice}
+		</if>
+		<if test="notifyTime != null">
+			, PRODUCT_NOTIFY_TIME = #{notifyTime}
+		</if>
+		<if test="prodExpireTime != null">
+			, PROD_EXPIRE_TIME = #{prodExpireTime}
+		</if>
+		<if test="failMsg != null">
+			, ORDER_FAIL_MSG = #{failMsg}
+		</if>
+		where ID = #{id} and ROW_VERSION = #{version}
+	</update>
+
+	<update id="orderUpdateWithLock" parameterType="map">
+		update ORDCT_ORDER
+		set
+		ROW_VERSION = ROW_VERSION + 1
+		<if test="payPrice != null">
+			,PAY_PRICE = #{payPrice}
+		</if>
+		where ORDER_UUID = #{orderUUID} and ROW_VERSION = #{version}
+	</update>
+</mapper>

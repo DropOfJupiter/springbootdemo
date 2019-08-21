@@ -14,5 +14,6 @@ public class UserInfoModel {
 	private String name;
 	private Integer age;
 	private Date birthday;
+	private String sex;
 
 }
