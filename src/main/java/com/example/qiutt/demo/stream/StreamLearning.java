@@ -98,21 +98,5 @@ public class StreamLearning {
 
 	}
 
-	@Test
-	public void streamDistinctByKey() {
-		List<UserInfoModel> userInfoModels=new ArrayList<UserInfoModel>();
-		for(int i=0;i<10;i++){
-			UserInfoModel userInfoModel=new UserInfoModel();
-			userInfoModel.setAge(RandomUtil.randomInt(10,16));
-			userInfoModel.setSex("男");
-			userInfoModels.add(userInfoModel);
-		}
-		userInfoModels.forEach(p -> {
-			log.info("用户年龄{}", p.getAge());
-		});
-		//根据指定字段进行去重
-		List<UserInfoModel> userInfoModels1=userInfoModels.stream()
-				.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(u ->u.getAge()))), ArrayList::new));
-		userInfoModels1.forEach(System.out::println);
-	}
+
 }
