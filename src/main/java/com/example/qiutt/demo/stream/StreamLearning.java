@@ -98,5 +98,25 @@ public class StreamLearning {
 
 	}
 
+	@Test
+	public void ifPresent(){
+		List<UserInfoModel> userInfoModels=new ArrayList<UserInfoModel>();
+		for(int i=0;i<10;i++){
+			UserInfoModel userInfoModel=new UserInfoModel();
+			userInfoModel.setAge(RandomUtil.randomInt(10,35));
+			userInfoModel.setSex("男");
+			userInfoModels.add(userInfoModel);
+		}
+		userInfoModels.forEach(p -> {
+			log.info("用户年龄{}", p.getAge());
+		});
+		Optional<UserInfoModel> model=userInfoModels.stream().filter(u->u.getSex().equals("男")).findFirst();
+		if(model.isPresent()){
+			model.get().setSex("111");
+		}
+		userInfoModels.forEach(p -> {
+			log.info("用户年龄:{}", p.getSex());
+		});	}
+
 
 }

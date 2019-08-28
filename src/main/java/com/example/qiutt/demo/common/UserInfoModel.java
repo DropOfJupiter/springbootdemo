@@ -1,5 +1,6 @@
 package com.example.qiutt.demo.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 public class UserInfoModel {
 	private String name;
 	private Integer age;
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	private Date birthday;
 	private String sex;
 
