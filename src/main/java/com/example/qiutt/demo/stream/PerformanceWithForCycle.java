@@ -33,7 +33,7 @@ public class PerformanceWithForCycle {
 //		stopwatch.start();
 //		integers.stream().parallel().map(Integer->{
 //			return Integer.intValue()+1;
-//		}).collect(Collectors.toList());
+//		}).collect(collectors.toList());
 //		stopwatch.stop();
 //		log.info("stream循环耗时[{}]",stopwatch.elapsed(TimeUnit.NANOSECONDS));
 

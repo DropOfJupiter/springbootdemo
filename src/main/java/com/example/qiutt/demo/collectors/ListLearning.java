@@ -1,4 +1,4 @@
-package com.example.qiutt.demo.Collectors;
+package com.example.qiutt.demo.collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

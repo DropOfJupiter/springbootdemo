@@ -1,4 +1,4 @@
-package com.example.qiutt.demo.Collectors;
+package com.example.qiutt.demo.collectors;
 
 import cn.hutool.json.JSONUtil;
 import com.example.qiutt.demo.stream.ConsumptPayType;
