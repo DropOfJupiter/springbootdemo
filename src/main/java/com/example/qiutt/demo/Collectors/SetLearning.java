@@ -1,7 +1,5 @@
 package com.example.qiutt.demo.Collectors;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.example.qiutt.demo.stream.ConsumptPayType;
 import lombok.extern.slf4j.Slf4j;
@@ -110,5 +108,16 @@ public class SetLearning {
 	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 		Map<Object,Boolean> seen = new ConcurrentHashMap<>();
 		return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	}
+
+	@Test
+	public void addAll(){
+		Set set= new HashSet();
+		set.add("1");
+
+		set.addAll(Arrays.asList("1"));
+		set.forEach(s->{
+			log.info(""+s);
+		});
 	}
 }

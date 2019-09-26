@@ -18,4 +18,6 @@ public class UserInfoModel {
 	private Date birthday;
 	private String sex;
 
+	private String fullName;
+
 }
