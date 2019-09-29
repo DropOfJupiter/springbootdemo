@@ -30,7 +30,7 @@ public class WebUtils {
 	 * @author: JIANGWEI
 	 * @date: 2014年6月18日
 	 */
-	public static String getRootDomain(String request) {
+	public static String getRootDomain(String  request) {
 		Matcher matcher = ROOT_DOMAIN_PATTERN.matcher(request);
 		if (matcher.find()) {
 			return matcher.group();
@@ -47,7 +47,7 @@ public class WebUtils {
 	 * @author: JIANGWEI
 	 * @date: 2014年6月18日
 	 */
-	public static String getDomain(String request) {
+	public static String getDomain(String  request) {
 		return request;
 	}
 }
