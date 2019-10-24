@@ -11,14 +11,10 @@ import java.util.Date;
  * @create 2019-04-02 19:30
  */
 @Data
-public class UserInfoModel {
+public class SignalModel {
+	private Integer id;
 	private String name;
-	private Integer age;
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	private Date birthday;
-	private String sex;
-	private Double salary;
-
-	private String fullName;
+	private Integer value;
+	private Date startTime;
 
 }
