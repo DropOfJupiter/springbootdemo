@@ -2,15 +2,14 @@ package com.example.qiutt.demo.stream;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
-import com.example.qiutt.demo.common.SignalModel;
-import com.example.qiutt.demo.common.StationStatusDTO;
-import com.example.qiutt.demo.common.StationStatusDetailVO;
-import com.example.qiutt.demo.common.UserInfoModel;
+import com.example.qiutt.demo.common.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -23,9 +22,9 @@ public class StreamFindFirst {
 	@Test
 	public void findFirst() throws InterruptedException {
 		List<StationStatusDTO> models=new ArrayList<StationStatusDTO>();
-		for(int i=0;i<10;i++){
+		for(int i=0;i<1;i++){
 			StationStatusDTO model=new StationStatusDTO();
-			model.setStatusId(RandomUtil.randomLong(3,6));
+			model.setStatusId(RandomUtil.randomLong(3,5));
 			model.setValue(RandomUtil.randomInt(0,2));
 //			model.setValue(i%2==0?0:1);
 			model.setStartTime(new Date());
@@ -63,7 +62,7 @@ public class StreamFindFirst {
 						if (!beginValue.equals(statusValue1)) {
 							detailVO.setStartTime(startTime);
 							detailVO.setEndTime(statusDTO1.getStartTime());
-							detailVO.setDuration(detailVO.getEndTime().getTime()-detailVO.getStartTime().getTime());
+							detailVO.setDuration((detailVO.getEndTime().getTime()-detailVO.getStartTime().getTime())/1000);
 							detailVOS.add(detailVO);
 							beginIndex=i;
 							beginValue=statusValue1;
@@ -73,20 +72,48 @@ public class StreamFindFirst {
 							statusDTO1 = stationStatusDTOS.get(stationStatusDTOS.size()-1);
 							detailVO.setStartTime(startTime);
 							detailVO.setEndTime(statusDTO1.getStartTime());
-							detailVO.setDuration(detailVO.getEndTime().getTime()-detailVO.getStartTime().getTime());
+							detailVO.setDuration((detailVO.getEndTime().getTime()-detailVO.getStartTime().getTime())/1000);
 							beginIndex=stationStatusDTOS.size()-1;
 							detailVOS.add(detailVO);
 						}
 					}
 				}
+				if(beginIndex==0){
+					StationStatusDetailVO detailVO = new StationStatusDetailVO();
+					detailVO.setStationId(statusDTO0.getStationId());
+					detailVO.setStatusId(statusDTO0.getStatusId());
+					detailVO.setStatusName(statusDTO0.getStatusName());
+					detailVOS.add(detailVO);
+				}
 			}
 		});
 		detailVOS.forEach(m -> {
-			log.info("处理后数据{}", JSON.toJSONString(m));
+			log.info("状态明细处理后数据{}", JSON.toJSONString(m));
 		});
 		detailVOS.sort(Comparator.comparing(StationStatusDetailVO::getStartTime));
 		detailVOS.forEach(m -> {
-			log.info("处理后升序数据{}", JSON.toJSONString(m));
+			log.info("状态明细排序后数据{}", JSON.toJSONString(m));
+		});
+
+		List<StationStatusSummaryVO> summaryVOS=new ArrayList<>();
+		Map<Long, List<StationStatusDetailVO>> byStatusIdMap2 = detailVOS.stream().collect(Collectors.groupingBy(StationStatusDetailVO::getStatusId));
+		byStatusIdMap2.forEach(new BiConsumer<Long, List<StationStatusDetailVO>>() {
+			@Override
+			public void accept(Long statusId, List<StationStatusDetailVO> stationStatusDetailVOS) {
+				if(!CollectionUtils.isEmpty(stationStatusDetailVOS)){
+					Long sumDuration=stationStatusDetailVOS.stream().map(StationStatusDetailVO::getDuration).reduce(new BinaryOperator<Long>() {
+						@Override
+						public Long apply(Long long1, Long long2) {
+							return long1+long2;
+						}
+					}).get();
+					summaryVOS.add(new StationStatusSummaryVO(statusId,stationStatusDetailVOS.get(0).getStatusName(),sumDuration));
+				}
+			}
+		});
+		summaryVOS.sort(Comparator.comparing(StationStatusSummaryVO::getStatusId));
+		summaryVOS.forEach(m -> {
+			log.info("状态汇总处理后数据{}", JSON.toJSONString(m));
 		});
 	}
 }
