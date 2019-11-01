@@ -22,7 +22,7 @@ public class StreamFindFirst {
 	@Test
 	public void findFirst() throws InterruptedException {
 		List<StationStatusDTO> models=new ArrayList<StationStatusDTO>();
-		for(int i=0;i<1;i++){
+		for(int i=0;i<5;i++){
 			StationStatusDTO model=new StationStatusDTO();
 			model.setStatusId(RandomUtil.randomLong(3,5));
 			model.setValue(RandomUtil.randomInt(0,2));
