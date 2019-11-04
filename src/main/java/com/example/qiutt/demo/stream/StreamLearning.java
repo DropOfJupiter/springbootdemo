@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
@@ -30,6 +32,9 @@ public class StreamLearning {
 		nums.stream().filter(n->n==null).collect(Collectors.toList()).forEach(b -> System.out.println(b));
 
 		log.info("sum is:"+nums.stream().filter(num -> num != null).distinct().mapToInt(num -> num * 2).peek(System.out::println).skip(2).limit(4).sum());
+
+
+
 	}
 
 	@Test
