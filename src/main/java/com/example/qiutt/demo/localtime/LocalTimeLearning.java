@@ -68,6 +68,6 @@ public class LocalTimeLearning {
 
 		log.info("getLastDayOfMonth:{}",DateUtils.getLastDayOfMonth("2019-01","-"));
 
-
+		log.info("begin.getTime():{}",begin.getTime());
 	}
 }

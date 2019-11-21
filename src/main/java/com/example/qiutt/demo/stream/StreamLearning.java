@@ -80,6 +80,13 @@ public class StreamLearning {
 		userInfoModels.forEach(p -> {
 			log.info("用户年龄{}", p.getAge());
 		});
+
+		userInfoModels.stream().map(userInfoModel -> {
+			userInfoModel.setAge(userInfoModel.getAge()+10);
+			return userInfoModel;
+		}).collect(Collectors.toList());
+
+		userInfoModels.forEach(System.out::println);
 		List<UserInfoModel> userInfoModelsAfterFilter=userInfoModels.stream().filter(u->{
 			return u.getAge()>20;
 		}).collect(Collectors.toList());
