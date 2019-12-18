@@ -37,4 +37,25 @@ public class ListLearning {
 			log.info("裁剪后用户年龄{}", p);
 		});
 	}
+
+	@Test
+	public void changeList(){
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for(int i=0;i<5;i++){
+			list.add(i+1);
+		}
+		list.forEach(p -> {
+			log.info("初始化用户年龄{}", p);
+		});
+		change(list);
+		list.forEach(p -> {
+			log.info("change用户年龄{}", p);
+		});
+	}
+
+	private void change(ArrayList<Integer> list) {
+		for(int i=0;i<5;i++){
+			list.set(i,100);
+		}
+	}
 }

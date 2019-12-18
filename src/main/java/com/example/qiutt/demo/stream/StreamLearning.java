@@ -8,6 +8,8 @@ import cn.hutool.json.JSONUtil;
 import com.example.qiutt.demo.common.UserInfoModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.*;
@@ -99,6 +101,8 @@ public class StreamLearning {
 	@Test
 	public void streamCountWithUserInfoModel() {
 		List<UserInfoModel> userInfoModels=new ArrayList<UserInfoModel>();
+		Assert.isTrue(!CollectionUtils.isEmpty(userInfoModels),"userInfoModels is empty");
+
 		for(int i=0;i<10;i++){
 			UserInfoModel userInfoModel=new UserInfoModel();
 			userInfoModel.setAge(RandomUtil.randomInt(10,35));
@@ -108,7 +112,7 @@ public class StreamLearning {
 		userInfoModels.forEach(p -> {
 			log.info("用户年龄{}", p.getAge());
 		});
-
+		Assert.isTrue(!CollectionUtils.isEmpty(userInfoModels),"1>0");
 		log.info("男性的个数{}", userInfoModels.stream().filter(u->{return u.getAge()>20;}).count());
 
 	}

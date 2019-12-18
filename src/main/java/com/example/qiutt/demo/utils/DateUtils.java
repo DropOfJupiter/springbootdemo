@@ -1,5 +1,8 @@
 package com.example.qiutt.demo.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +12,7 @@ import java.util.Date;
  * @description:no description
  * @create 2019-11-05 15:29
  */
+@Slf4j
 public class DateUtils {
 
 	/**
@@ -70,5 +74,29 @@ public class DateUtils {
 		Date lastDayOfMonth = cal.getTime();
 		return lastDayOfMonth;
 	}
+
+	/**
+	 * 获得指定时间的前n月，或者后n月 added by qiutt 20170523
+	 *
+	 * @param date
+	 * @param preDays(preDays>0获取指定时间的后preDays天
+	 *            preDays<0获取指定时间的前preDays天)
+	 */
+	public static Date getRecentMonth(Date date, Integer months,String dateStyleEnum) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, months);
+		date = calendar.getTime();
+		SimpleDateFormat format = new SimpleDateFormat(dateStyleEnum);
+		String dateStr = format.format(calendar.getTime());
+		try {
+			date = format.parse(dateStr);
+		} catch (ParseException e) {
+			log.info(String.valueOf(e));
+		}
+		return date;
+
+	}
+
 
 }
