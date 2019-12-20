@@ -1,4 +1,4 @@
-package com.example.qiutt.demo.Transient;
+package com.example.qiutt.demo.transienttest;
 
 import java.io.Serializable;
 
