@@ -19,6 +19,11 @@ public class StringUtils {
 
 	@Test
 	public void test(){
+		Long long1=10L;
+		Long long2=2L;
+		String str1="合并起来是"+long1+"-"+long2;
+		log.info("str：{}", new Random().nextInt(2));
+
 		String resourceUUIDs="mcc-3p00003odxmx,mcc-3p00003odxmy";
 		if(org.springframework.util.StringUtils.isEmpty(resourceUUIDs)) {
 			log.info("resourceUUIDs为空");

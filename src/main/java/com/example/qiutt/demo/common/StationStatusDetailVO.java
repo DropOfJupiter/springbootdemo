@@ -1,5 +1,6 @@
 package com.example.qiutt.demo.common;
 
+import com.example.qiutt.demo.utils.DateUtils;
 import lombok.Data;
 
 import java.util.Date;
@@ -28,4 +29,12 @@ public class StationStatusDetailVO {
 
 	//状态发生时长（分钟为单位）
 	private Long duration;
+
+	@Override
+	public String toString(){
+		return this.getStatusId()+"-"
+				+ DateUtils.dateToString(this.getStartTime(), DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS)+"-"
+				+ DateUtils.dateToString(this.getEndTime(), DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS)+"-"
+				+ this.getDuration();
+	}
 }

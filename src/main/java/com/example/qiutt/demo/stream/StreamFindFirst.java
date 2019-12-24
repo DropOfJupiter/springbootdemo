@@ -4,10 +4,13 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.qiutt.demo.common.*;
+import com.example.qiutt.demo.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.util.CollectionUtils;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -20,6 +23,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class StreamFindFirst {
+
+	private final static Integer STATUS_START_FLAG = 1;
+
+
 	@Test
 	public void findFirst() throws InterruptedException {
 		List<StationStatusDTO> models = new ArrayList<StationStatusDTO>();
@@ -118,76 +125,5 @@ public class StreamFindFirst {
 		});
 	}
 
-	@Test
-	public void statusCount() throws InterruptedException {
-		List<StationStatusDTO> models = new ArrayList<StationStatusDTO>();
-		for (int i = 0; i < 10; i++) {
-			StationStatusDTO model = new StationStatusDTO();
-			model.setStatusId(RandomUtil.randomLong(3, 5));
-			model.setValue(RandomUtil.randomInt(0, 2));
-			//model.setValue(i%2==0?0:1);
-			model.setStartTime(new Date());
-			models.add(model);
-			Thread.sleep(500);
-		}
-		//正序
-		models.sort(Comparator.comparing(StationStatusDTO::getStartTime));
 
-		List<StationStatusDetailVO> detailVOS = new ArrayList<>();
-		//状态开始标志
-		Integer startFlag = 1;
-		Map<Long, List<StationStatusDTO>> byStatusIdMap = models.stream().collect(Collectors.groupingBy(StationStatusDTO::getStatusId));
-		byStatusIdMap.forEach(new BiConsumer<Long, List<StationStatusDTO>>() {
-			@Override
-			public void accept(Long statusId, List<StationStatusDTO> stationStatusDTOS) {
-				stationStatusDTOS.forEach(m -> {
-					log.info("状态初始数据{}", JSON.toJSONString(m));
-				});
-				recursion(stationStatusDTOS);
-			}
-
-			private void recursion(List<StationStatusDTO> stationStatusDTOS) {
-				log.info("当前递归的集合{}", JSONObject.toJSONString(stationStatusDTOS));
-				List<StationStatusDTO> tmp = stationStatusDTOS;
-				//找到集合中状态开始的记录
-				Optional<StationStatusDTO> stationStatusDTO = stationStatusDTOS.stream().filter(s -> s.getValue().equals(startFlag)).findFirst();
-				if (!stationStatusDTO.isPresent()) {
-					return;
-				}
-				Integer beginIndex = stationStatusDTOS.indexOf(stationStatusDTO.get());
-				StationStatusDTO beginStatusDTO = stationStatusDTOS.get(beginIndex);
-				Date startTime = beginStatusDTO.getStartTime();
-				StationStatusDetailVO detailVO = new StationStatusDetailVO();
-				detailVO.setStatusId(beginStatusDTO.getStatusId());
-				if(beginIndex==stationStatusDTOS.size() - 1){
-					detailVO.setStartTime(beginStatusDTO.getStartTime());
-					detailVO.setEndTime(new Date());
-					detailVO.setDuration((detailVO.getEndTime().getTime() - detailVO.getStartTime().getTime()));
-					detailVOS.add(detailVO);
-				}else{
-					for (int i = beginIndex + 1; i < stationStatusDTOS.size(); i++) {
-						StationStatusDTO statusDTO1 = stationStatusDTOS.get(i);
-						Integer statusValue1 = statusDTO1.getValue();
-						if (!startFlag.equals(statusValue1)) {
-							detailVO.setStartTime(startTime);
-							detailVO.setEndTime(statusDTO1.getStartTime());
-							detailVO.setDuration((detailVO.getEndTime().getTime() - detailVO.getStartTime().getTime()));
-							detailVOS.add(detailVO);
-							recursion(tmp.subList(i + 1, tmp.size()));
-							break;
-						} else if (i == stationStatusDTOS.size() - 1) {
-							detailVO.setStartTime(beginStatusDTO.getStartTime());
-							detailVO.setEndTime(new Date());
-							detailVO.setDuration((detailVO.getEndTime().getTime() - detailVO.getStartTime().getTime()));
-							detailVOS.add(detailVO);
-						}
-					}
-				}
-			}
-		});
-		detailVOS.sort(Comparator.comparing(StationStatusDetailVO::getStartTime));
-		detailVOS.forEach(m -> {
-			log.info("状态明细排序后数据{}", JSON.toJSONString(m));
-		});
-	}
 }
