@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,5 +58,17 @@ public class ListLearning {
 		for(int i=0;i<5;i++){
 			list.set(i,100);
 		}
+	}
+
+	@Test
+	public void removeNull(){
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for(int i=0;i<5;i++){
+			list.add(i%2==0?i+1:null);
+		}
+		log.info("list初始化大小：{}", list.size());
+		list.removeAll(Collections.singleton(null));
+		log.info("list删除空记录后大小：{}", list.size());
+
 	}
 }
