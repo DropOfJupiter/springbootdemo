@@ -171,25 +171,22 @@ public class KafkaUtils {
 	public static void consume(String zkUrls, String brokerUrls, String topic) {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", brokerUrls);
-		props.put("group.id", "qiutt_group_id_test");
-		props.put("enable.auto.commit", "true");
+		props.put("group.id", "preview_test");
+		props.put("enable.auto.commit", false);
+		props.put("max.poll.records",5);
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList(topic));
-		final int minBatchSize = 200;
+		ConsumerRecords<String, String> records = consumer.poll(100);
 		List<ConsumerRecord<String, String>> buffer = new ArrayList<>();
-		while (true) {
-			ConsumerRecords<String, String> records = consumer.poll(100);
-			for (ConsumerRecord<String, String> record : records) {
-				log.info("record-topic:{},record-key:{},record-value:{}", record.topic(), record.key(), record.value());
-				buffer.add(record);
-			}
-			if (buffer.size() >= minBatchSize) {
-				//insertIntoDb(buffer);
-				consumer.commitSync();
-				buffer.clear();
-			}
+		for (ConsumerRecord<String, String> record : records) {
+			log.info("record-topic:{},record-key:{},record-value:{}", record.topic(), record.key(), record.value());
+			buffer.add(record);
 		}
+		consumer.commitSync();
+		consumer.close();
+		log.info("buffer:{}",JSON.toJSONString(buffer));
+		buffer.clear();
 	}
 }

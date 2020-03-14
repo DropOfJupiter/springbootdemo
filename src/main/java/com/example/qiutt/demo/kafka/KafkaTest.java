@@ -44,6 +44,12 @@ public class KafkaTest {
 
 	@Test
 	public void getTopicByZk(){
+
+		String[] strings=new String[]{"1","2"};
+		for(int i=0;i<strings.length;i++){
+			strings[i]="0";
+		}
+		log.info("s:{}",strings.toString());
 		ZkUtils zkUtils = KafkaUtils.getZkUtils(zkURL);
 		List<String> topics=KafkaUtils.listTopicsByZK(zkUtils);
 		zkUtils.close();
