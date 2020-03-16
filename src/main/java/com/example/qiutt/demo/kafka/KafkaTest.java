@@ -37,10 +37,10 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class KafkaTest {
 
-	String zkURL="192.168.8.113:31152";
-	//String zkURL="127.0.0.1:2181";
-	//String broker="127.0.0.1:9092";
-	String broker="192.168.8.113:30092";
+	//String zkURL="192.168.8.113:31152";
+	String zkURL="192.168.16.127:2181";
+	String broker="192.168.16.127:9092";
+	//String broker="192.168.8.113:30092";
 
 	@Test
 	public void getTopicByZk(){
@@ -87,7 +87,7 @@ public class KafkaTest {
 	//发送消息
 	@Test
 	public void send(){
-		KafkaUtils.produce(zkURL,broker,"qiutt_topic_1","bye bye1");
+		KafkaUtils.produce(zkURL,broker,"qiutt_test_topic_1","bye bye1");
 	}
 
 	//发送消息

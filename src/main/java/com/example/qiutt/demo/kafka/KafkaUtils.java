@@ -155,10 +155,11 @@ public class KafkaUtils {
 		props.put("buffer.memory", 33554432);
 		props.put("key.serializer", KafkaConstant.KEY_SERIALIZER);
 		props.put("value.serializer", KafkaConstant.VALUE_SERIALIZER);
+		//props.put("serializer.encoding","GBK");
 
 		Producer<String, String> producer = new KafkaProducer<>(props);
 		try {
-			RecordMetadata recordMetadata = producer.send(new ProducerRecord<String, String>(topic, "Key" + msg, "Value" + msg)).get();
+			RecordMetadata recordMetadata = producer.send(new ProducerRecord<String, String>(topic, "Key是：" + msg, "Value是哈哈：" + msg)).get();
 			log.info("recordMetadata:{}",JSON.toJSONString(recordMetadata));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
