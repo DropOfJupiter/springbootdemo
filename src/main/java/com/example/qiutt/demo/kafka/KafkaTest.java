@@ -37,22 +37,23 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class KafkaTest {
 
-	//String zkURL="192.168.8.113:31152";
 	String zkURL="192.168.16.127:2181";
 	String broker="192.168.16.127:9092";
-	//String broker="192.168.8.113:30092";
+//	String zkURL="192.168.8.113:31152";
+//	String broker="192.168.8.113:30092";
 
 	@Test
 	public void getTopicByZk(){
-
-		String[] strings=new String[]{"1","2"};
-		for(int i=0;i<strings.length;i++){
-			strings[i]="0";
-		}
-		log.info("s:{}",strings.toString());
-		ZkUtils zkUtils = KafkaUtils.getZkUtils(zkURL);
-		List<String> topics=KafkaUtils.listTopicsByZK(zkUtils);
-		zkUtils.close();
+		List<String> list=new ArrayList<>();
+		list.clear();
+//		String[] strings=new String[]{"1","2"};
+//		for(int i=0;i<strings.length;i++){
+//			strings[i]="0";
+//		}
+//		log.info("s:{}",strings.toString());
+//		ZkUtils zkUtils = KafkaUtils.getZkUtils(zkURL);
+//		List<String> topics=KafkaUtils.listTopicsByZK(zkUtils);
+//		zkUtils.close();
 	}
 
 	@Test
@@ -66,7 +67,7 @@ public class KafkaTest {
 	@Test
 	public void createTopicByZk(){
 		ZkUtils zkUtils = ZkUtils.apply(zkURL, 30000, 30000, JaasUtils.isZkSecurityEnabled());
-		AdminUtils.createTopic(zkUtils,"qiutt_topic_1",1,1,new Properties(), RackAwareMode.Enforced$.MODULE$);
+		AdminUtils.createTopic(zkUtils,"user_order_info_topic",1,1,new Properties(), RackAwareMode.Enforced$.MODULE$);
 		zkUtils.close();
 	}
 
@@ -87,7 +88,7 @@ public class KafkaTest {
 	//发送消息
 	@Test
 	public void send(){
-		KafkaUtils.produce(zkURL,broker,"qiutt_test_topic_1","bye bye1");
+		KafkaUtils.produce(zkURL,broker,"user_order_info_topic","bye bye1");
 	}
 
 	//发送消息

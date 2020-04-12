@@ -1,11 +1,13 @@
 package com.example.qiutt.demo.kafka;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import kafka.admin.AdminUtils;
 import kafka.cluster.Broker;
 import kafka.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -155,16 +157,28 @@ public class KafkaUtils {
 		props.put("buffer.memory", 33554432);
 		props.put("key.serializer", KafkaConstant.KEY_SERIALIZER);
 		props.put("value.serializer", KafkaConstant.VALUE_SERIALIZER);
-		//props.put("serializer.encoding","GBK");
-
+		props.put("serializer.encoding","GBK");
 		Producer<String, String> producer = new KafkaProducer<>(props);
-		try {
-			RecordMetadata recordMetadata = producer.send(new ProducerRecord<String, String>(topic, "Key是：" + msg, "Value是哈哈：" + msg)).get();
-			log.info("recordMetadata:{}",JSON.toJSONString(recordMetadata));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		String[] userNames=new String[]{"猪八戒","孙悟空","唐三藏","红孩儿","沙悟净","铁拐李","何仙姑"};
+		for(int i=0;i<20;i++){
+			Date createTime=new Date();
+			String createTimeStr=DateFormatUtils.format(createTime,"yyyy-MM-ddTHH:mm:ssZ");
+			OrderInfo orderInfo=OrderInfo.builder()
+					.userName(userNames[RandomUtil.randomInt(0,userNames.length)])
+					.orderId(UUID.randomUUID().toString())
+					.createTime(createTime)
+					.createTimeStr(createTimeStr)
+					.createTimeStamp(createTime.getTime()/1000)
+					.amount(RandomUtil.randomInt(15,30)).build();
+			try {
+				RecordMetadata recordMetadata = producer.send(new ProducerRecord<String, String>(topic, orderInfo.getOrderId().toString(),JSON.toJSONString(orderInfo))).get();
+				log.info("recordMetadata:{}",JSON.toJSONString(recordMetadata));
+				Thread.sleep(RandomUtil.randomInt(5000,10000));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
 		}
 		producer.close();
 	}
