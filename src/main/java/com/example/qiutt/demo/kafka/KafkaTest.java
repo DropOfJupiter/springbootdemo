@@ -12,6 +12,7 @@ import kafka.server.ConfigType;
 import kafka.utils.Json;
 import kafka.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHost;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsResult;
@@ -37,15 +38,13 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class KafkaTest {
 
-	String zkURL="192.168.16.127:2181";
-	String broker="192.168.16.127:9092";
-//	String zkURL="192.168.8.113:31152";
-//	String broker="192.168.8.113:30092";
+//	String zkURL="192.168.16.127:2181";
+//	String broker="192.168.16.127:9092";
+	String zkURL="192.168.8.113:31152";
+	String broker="192.168.8.113:30092";
 
 	@Test
 	public void getTopicByZk(){
-		List<String> list=new ArrayList<>();
-		list.clear();
 //		String[] strings=new String[]{"1","2"};
 //		for(int i=0;i<strings.length;i++){
 //			strings[i]="0";
@@ -88,7 +87,7 @@ public class KafkaTest {
 	//发送消息
 	@Test
 	public void send(){
-		KafkaUtils.produce(zkURL,broker,"user_order_info_topic","bye bye1");
+		KafkaUtils.produce(zkURL,broker,"order_info_topic","bye bye1");
 	}
 
 	//发送消息

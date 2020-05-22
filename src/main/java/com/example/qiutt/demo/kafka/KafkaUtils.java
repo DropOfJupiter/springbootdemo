@@ -159,20 +159,20 @@ public class KafkaUtils {
 		props.put("value.serializer", KafkaConstant.VALUE_SERIALIZER);
 		props.put("serializer.encoding","GBK");
 		Producer<String, String> producer = new KafkaProducer<>(props);
-		String[] userNames=new String[]{"猪八戒","孙悟空","唐三藏","红孩儿","沙悟净","铁拐李","何仙姑"};
-		for(int i=0;i<20;i++){
+		String[] userNames=new String[]{"Monica","Rachel","Phoebe","Ross","Chandler","Joseph"};
+		for(int i=1;i<500;i++){
 			Date createTime=new Date();
-			String createTimeStr=DateFormatUtils.format(createTime,"yyyy-MM-ddTHH:mm:ssZ");
+			String createTimeStr=DateFormatUtils.format(createTime,"yyyy-MM-dd HH:mm:ss");
 			OrderInfo orderInfo=OrderInfo.builder()
 					.userName(userNames[RandomUtil.randomInt(0,userNames.length)])
-					.orderId(UUID.randomUUID().toString())
+					.orderId(String.valueOf(RandomUtil.randomNumber()))
 					.createTime(createTime)
 					.createTimeStr(createTimeStr)
 					.createTimeStamp(createTime.getTime()/1000)
 					.amount(RandomUtil.randomInt(15,30)).build();
 			try {
 				RecordMetadata recordMetadata = producer.send(new ProducerRecord<String, String>(topic, orderInfo.getOrderId().toString(),JSON.toJSONString(orderInfo))).get();
-				log.info("recordMetadata:{}",JSON.toJSONString(recordMetadata));
+				log.info("recordMetadata:{}",JSON.toJSONString(orderInfo));
 				Thread.sleep(RandomUtil.randomInt(5000,10000));
 			} catch (InterruptedException e) {
 				e.printStackTrace();

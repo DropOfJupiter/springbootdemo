@@ -1,11 +1,14 @@
 package com.example.qiutt.demo.str;
 
+import com.example.qiutt.demo.utils.DateUtils;
 import com.example.qiutt.demo.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * @author qiutt
@@ -68,5 +71,12 @@ public class StrTest {
 				log.info(encode);
 			}
 		}
+	}
+
+	@Test
+	public void getIntervalDays() throws ParseException {
+		Date consumptionBeginTime = DateUtils.strToDate("2020-05-02 00:00:00.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		Date consumptionEndTime = DateUtils.strToDate("2020-05-31 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		log.info("getIntervalDays:{}",DateUtils.getIntervalDays(consumptionBeginTime,consumptionEndTime)+1);
 	}
 }

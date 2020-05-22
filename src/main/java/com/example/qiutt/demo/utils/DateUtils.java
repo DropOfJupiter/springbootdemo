@@ -4,10 +4,12 @@
  */
 package com.example.qiutt.demo.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -22,8 +24,46 @@ public class DateUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DateUtils.class);
 	private ZoneId zone = ZoneId.systemDefault();
 
+	public static int getIntervalDays(Date date, Date otherDate) {
+		int num = -1;
+		final String pattern = "yyyy-MM-dd";
+		String dateTmp = dateToString(date, pattern);
+		String otherDateTmp = dateToString(otherDate, pattern);
+		if (StringUtils.isNotBlank(dateTmp) && StringUtils.isNotBlank(otherDateTmp)) {
+			long time = 0;
+			try {
+				time = Math
+						.abs(stringToDate(dateTmp, pattern).getTime() - stringToDate(otherDateTmp, pattern).getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			num = (int) (time / (24 * 60 * 60 * 1000));
+		}
+		return num;
+	}
 
+	/**
+	 * 日期转字符串
+	 *
+	 * @param date    日期
+	 * @param pattern 日期格式
+	 * @return {@link String}
+	 */
+	public static String dateToString(Date date, String pattern) {
+		return DateFormatUtils.format(date, pattern);
+	}
 
+	/**
+	 * 转化字符串日期
+	 *
+	 * @param dateString 字符串日期
+	 * @param pattern    日期格式
+	 * @return {@link Date}
+	 */
+	public static Date stringToDate(String dateString, String pattern) throws ParseException {
+		DateFormat format = new SimpleDateFormat(pattern);
+		return format.parse(dateString);
+	}
 	/**
 	 * 日期格式化风格枚举类
 	 *
