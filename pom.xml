@@ -123,8 +123,25 @@
 			<scope>system</scope>
 			<systemPath>${java.home}/../lib/tools.jar</systemPath>
 		</dependency>
-
-
+		<!--导出pdf文件开始-->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+            <version>4.2.1</version>
+		</dependency>
+		<!-- 语言包 -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-asian</artifactId>
+            <version>5.2.0</version>
+		</dependency>
+		<!--iText工具包-->
+		<dependency>
+			<groupId>com.itextpdf.tool</groupId>
+			<artifactId>xmlworker</artifactId>
+            <version>5.4.1</version>
+		</dependency>
+		<!--导出pdf文件结束-->
 	</dependencies>
 
 	<build>
