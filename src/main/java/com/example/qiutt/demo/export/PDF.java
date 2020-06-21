@@ -9,10 +9,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 
 /**
  * @author qiutt
@@ -147,8 +144,12 @@ public class PDF {
 
 	@Test
 	public void fromHtml() throws IOException, DocumentException {
+		final File htmlFile = File.createTempFile("temp", ".pdf");//创建临时文件
+		log.info("临时文件所在的本地路径：" + htmlFile.getPath());
+		FileOutputStream fos = new FileOutputStream(htmlFile);
 		Document document = new Document();
-		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(FILE_PATH+System.currentTimeMillis()+".pdf"));
+		//PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(FILE_PATH+System.currentTimeMillis()+".pdf"));
+		PdfWriter writer = PdfWriter.getInstance(document, fos);
 		document.open();
 		String htmlString = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html;  charset=\"UTF-8\"/><title>用户总账</title></head><style type=\"text/css\">body {font-family:'Microsoft YaHei';width:1000px;margin:0 auto;}tr{height:38px}</style><body><div><img src=\"https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=573484643,3618883016&fm=58&s=9133CC329420DF114CE799C6030010BA&bpow=121&bpoh=75\" /></div><div><h2 style=\"text-align: center;font-weight: bolder;\">year年month月资源结算单</h2></div><div style=\"font-weight: bolder;font-size: 18px;\"><table><tr><td style='width:150px;font-weight: bolder;'>客户名称：</td><td style=\"width:370px\">fullName</td><td style='width:220px;font-weight: bolder;'>本期消费总计：</td><td style='width:150px;text-align: right;'>￥0</td></tr><tr><td style='width:150px;font-weight: bolder;'>用户账号：</td><td style=\"width:370px\">userName</td><td style='width:220px;font-weight: bolder;'>本期应还总计：</td><td style='width:150px;text-align: right;'>￥0</td></tr><tr><td style='width:150px;font-weight: bolder;'>账单周期：</td><td style=\"width:370px\">billDate</td><td style='font-weight: bolder;width:220px;'>账户余额：</td><td style='width:150px;text-align: right;'>￥0</td></tr></table></div><div style=\"margin-top:50px\"><h3>收款账户</h3></div><div><table><tr><td style=\"width:120px\">户名</td><td>靠谱云股份有限公司</td></tr><tr><td style=\"width:120px\">账号</td><td>3510 1511 0010 5000 2349</td></tr><tr><td style=\"width:120px\">开户行</td><td>中国建设银行股份有限公司厦门文灶支行</td></tr></table></div><div style=\"margin-top:50px\"><h3>本期消费账单</h3></div><div><table style=\"width:100%;\" cellspacing=\"0\" cellpadding=\"0\"><tr style=\"font-weight:bolder;background-color:#b3d2f9;padding:5px;height:30px\"><td style=\"text-align:left;width:300px\">产品线</td><td style=\"text-align:left;width:300px\">付费模式</td><td style=\"text-align:right;width:400px\">消费金额(含代金券)</td></tr><tr><td styel='height:30px;'>0</td><td styel='height:30px;'>1</td><td style=\"text-align:right;padding-right:10px;height:30px;\">￥2</td></tr><tr><td styel='height:30px;'>0</td><td styel='height:30px;'>1</td><td style=\"text-align:right;padding-right:10px;height:30px;\">￥2</td></tr><tr><td styel='height:30px;'>0</td><td styel='height:30px;'>1</td><td style=\"text-align:right;padding-right:10px;height:30px;\">￥2</td></tr></table></div><div><p style=\"text-align:right;padding-right:150px;font-weight:bolder\">本期消费总计(含代金券)：￥0</p></div><div><p>本期应还总计：￥<span>0</span></p><p>=本期消费欠款 ￥<span>0</span> + 历史欠款 ￥<span>0</span></p></div><div><p style='color:red;font-size: 12px;'>*注意： 请在收到结算单后，及时核对确认，如在三个工作日内没有收到您的回复，则视为同意上述结算信息。</p></div><div style=\"margin-top:50px\"><p style=\"text-align:right;padding-right:180px;font-weight:bolder\">盖章处</p></div></body></html>";
 //		ByteArrayInputStream bin = new ByteArrayInputStream(htmlString.getBytes("GBK"));
@@ -164,5 +165,21 @@ public class PDF {
 		XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(htmlString));
 
 		document.close();
+	}
+
+	@Test
+	public void tmp() throws IOException {
+		final File htmlFile = File.createTempFile("temp", ".txt");//创建临时文件
+		log.info("临时文件所在的本地路径：" + htmlFile.getPath());
+		FileOutputStream fos = new FileOutputStream(htmlFile);
+		try {
+			//这里处理业务逻辑
+		} finally {
+			//关闭临时文件
+			fos.flush();
+			fos.close();
+
+			//htmlFile.deleteOnExit();//程序退出时删除临时文件
+		}
 	}
 }

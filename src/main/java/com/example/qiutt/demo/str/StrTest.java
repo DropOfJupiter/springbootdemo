@@ -53,7 +53,7 @@ public class StrTest {
 
 		System.out.println(new String("12、中文".getBytes("ISO8859_1"), "ISO8859_1"));
 
-		System.out.println(new String("13、锟斤拷锟�".getBytes("GB2312"), "GBK"));
+		System.out.println(new String("13、锟斤拷锟�".getBytes("UTF-8"), "GBK"));
 		System.out.println(new String("14、锟斤拷锟�".getBytes(), "ISO8859_1"));
 		System.out.println(new String("15、锟斤拷锟�".getBytes(), "GBK"));
 		System.out.println(new String("16、锟斤拷锟�".getBytes(), "UTF-8"));
@@ -64,7 +64,7 @@ public class StrTest {
 
 	@Test
 	public void getEncoding() throws UnsupportedEncodingException {
-		String str = "锟斤拷锟�";
+		String str = "你好";
 		String[] encodes = new String[]{"GB2312","ISO-8859-1","UTF-8","GBK"};
 		for(String encode:encodes){
 			if (str.equals(new String(str.getBytes(encode), encode))) { //判断是不是GB2312

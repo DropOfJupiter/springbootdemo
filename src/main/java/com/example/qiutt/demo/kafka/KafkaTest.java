@@ -29,6 +29,7 @@ import scala.collection.Seq;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 /**
  * @author qiutt
@@ -53,6 +54,16 @@ public class KafkaTest {
 //		ZkUtils zkUtils = KafkaUtils.getZkUtils(zkURL);
 //		List<String> topics=KafkaUtils.listTopicsByZK(zkUtils);
 //		zkUtils.close();
+		String s=null;
+		String s1=Optional.ofNullable(s).orElseGet(new Supplier<String>() {
+			@Override
+			public String get() {
+				return "111";
+			}
+		});
+		String s2=Optional.ofNullable(s).orElse("3333");
+		log.info("s1:{},s2：{}",s1,s2);
+
 	}
 
 	@Test
