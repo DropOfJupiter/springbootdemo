@@ -8,6 +8,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.*;
 
@@ -16,12 +18,21 @@ import java.io.*;
  * @description:no description
  * @create 2020-06-17 18:09
  */
+@SpringBootTest
 @Slf4j
 public class PDF {
 
 	public static String FILE_PATH = "D:/";
 
 	public static String IMAGE_PATH="F:\\靠谱云\\02 工作内容\\2020\\06 海外X云\\01 财务服务\\u4573.png";
+
+	@Value("age")
+	private String age;
+
+	@Test
+	public void age(){
+		log.info("age{}",age);
+	}
 
 	@Test
 	public void test() throws IOException, DocumentException {

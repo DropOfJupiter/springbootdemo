@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>账单</title>
+    <style>
+        body,
+        html {
+            font-family: 'Microsoft YaHei';
+            background-color: rgb(245, 245, 245);
+            margin: 0;
+            height: 100%;
+        }
+        .main {
+            width: 1000px;
+            height: 100%;
+            box-sizing: border-box;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+        .content {
+            padding: 20px;
+            background-color: #fff;
+        }
+        .fr {
+            float: right;
+        }
+        .top .title {
+            position: relative;
+            top: 10px;
+            font-size: 40px;
+            font-weight: 500;
+        }
+        table {
+            margin-top: 10px;
+            border-collapse: collapse;
+            /* font-size: 20px; */
+        }
+        table,
+        td,
+        th {
+            text-align: left;
+            border: 1px solid black;
+        }
+        table tr .textRight {
+            text-align: right;
+        }
+        td,
+        th {
+            padding: 0 5px;
+            height: 30px;
+            line-height: 30px;
+        }
+        .smallCol {
+            width: 120px;
+        }
+        .bigCol {
+            width: 480px;
+            max-width: 480px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+        .bottomTip {
+            margin-top: 20px;
+        }
+        .totalPrice {
+            font-size: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+<div class="main">
+    <div class="content">
+        <div class="top">
+            <img src="./logo_fortnode.jpg" alt="logo" />
+            <span class="title fr">Bill</span>
+        </div>
+        <div>14 Cliffwood Ave Suite 300</div>
+        <div>
+            Matawan, NJ 07747<span class="fr">Bill Date：${BILL_DATE}</span>
+        </div>
+        <div>
+            United States<span class="fr">${EMAIL}</span>
+        </div>
+        <table>
+            <tr>
+                <th class="smallCol">Start</th>
+                <th class="smallCol">End</th>
+                <th class="bigCol">Description</th>
+                <th class="smallCol textRight">Quantity</th>
+                <th class="smallCol textRight">Price</th>
+            </tr>
+            ${FOR_EACH}
+            <!--此处循环-->
+            <!-- <tr>
+                <td class="smallCol">06-22 12:12</td>
+                <td class="smallCol">09-22 12:12</td>
+                <td class="bigCol">aajakdfbkjadgfaehb</td>
+                <td class="smallCol textRight">200</td>
+                <td class="smallCol textRight">$200</td>
+            </tr> -->
+            <tr>
+                <td colspan="5">
+                    <div class="totalPrice fr">Total(in USD)：${TOTAL}</div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="bottomTip">
+            To make a payment, view your billing history, or ask
+            questions about your account, please login to
+            https://xxxx.com.
+        </div>
+    </div>
+</div>
+</body>
+</html>
