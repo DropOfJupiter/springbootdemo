@@ -7,6 +7,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -191,6 +192,40 @@ public class PDF {
 			fos.close();
 
 			//htmlFile.deleteOnExit();//程序退出时删除临时文件
+		}
+	}
+
+	@Test
+	public void fromHtmlToPDF(){
+		try {
+			String oriHTML = FileUtils.readFileToString(new File("G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\month_consumption_bill_template.html"));
+			log.info("oriHTML:{}",oriHTML);
+			oriHTML=oriHTML.replace("${BILL_DATE}","05-2020");
+			oriHTML=oriHTML.replace("${EMAIL}","useraccount@163.com");
+			StringBuffer tableInfos=new StringBuffer();
+			/**
+			 * <tr>
+			 <td class="smallCol">06-22 12:12</td>
+			 <td class="smallCol">09-22 12:12</td>
+			 <td class="bigCol">aajakdfbkjadgfaehb</td>
+			 <td class="smallCol textRight">200</td>
+			 <td class="smallCol textRight">$200</td>
+			 </tr>
+			 */
+			for(int i=0;i<5;i++){
+				tableInfos.append("<tr>");
+				tableInfos.append("<td class=\"smallCol\">06-22 12:12</td>");
+				tableInfos.append("<td class=\"smallCol\">09-22 12:12</td>");
+				tableInfos.append("<td class=\"bigCol\">aajakdfbkjadgfaehb</td>");
+				tableInfos.append("<td class=\"smallCol textRight\">200</td>");
+				tableInfos.append("<td class=\"smallCol textRight\">$200</td>");
+				tableInfos.append("</tr>");
+			}
+			oriHTML=oriHTML.replace("${FOR_EACH}",tableInfos.toString());
+			oriHTML=oriHTML.replace("${TOTAL}","$1000");
+			log.info("oriHTML:{}",oriHTML);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

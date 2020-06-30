@@ -18,7 +18,13 @@ public class UserInfoModel {
 	private Date birthday;
 	private String sex;
 	private Double salary;
-
+//
 	private String fullName;
+	private Job job;
+
+	@Data
+	public class Job{
+		private String name;
+	}
 
 }
