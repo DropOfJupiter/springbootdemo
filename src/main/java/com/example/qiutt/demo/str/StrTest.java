@@ -75,8 +75,9 @@ public class StrTest {
 
 	@Test
 	public void getIntervalDays() throws ParseException {
-		Date consumptionBeginTime = DateUtils.strToDate("2020-05-02 00:00:00.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		Date consumptionBeginTime = DateUtils.strToDate("2020-06-11 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
 		Date consumptionEndTime = DateUtils.strToDate("2020-05-31 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		consumptionEndTime=new Date();
 		log.info("getIntervalDays:{}",DateUtils.getIntervalDays(consumptionBeginTime,consumptionEndTime)+1);
 	}
 }

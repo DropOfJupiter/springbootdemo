@@ -4,13 +4,24 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontProvider;
 import com.itextpdf.text.pdf.BaseFont;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author qiutt
  * @description:no description
  * @create 2020-06-19 15:24
  */
+@Slf4j
 public class PdfExportUtils {
+
+	public static final String HTML_PATH = "G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\month_consumption_bill_template.html";
+	public static final String PDF_PATH = "G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\month_consumption_bill_template.pdf";
+
+
 	/**
 	 * 解决中文字体
 	 * <p>Title: ChinaFontProvide</p>
@@ -45,5 +56,37 @@ public class PdfExportUtils {
 		public boolean isRegistered(String arg0) {
 			return false;
 		}
+	}
+
+
+
+	public static String initHTML() throws IOException {
+		String oriHTML = FileUtils.readFileToString(new File(HTML_PATH));
+		log.info("oriHTML:{}", oriHTML);
+		oriHTML = oriHTML.replace("${BILL_DATE}", "05-2020");
+		oriHTML = oriHTML.replace("${EMAIL}", "useraccount@163.com");
+		StringBuffer tableInfos = new StringBuffer();
+		/**
+		 * <tr>
+		 <td class="smallCol">06-22 12:12</td>
+		 <td class="smallCol">09-22 12:12</td>
+		 <td class="bigCol">aajakdfbkjadgfaehb</td>
+		 <td class="smallCol textRight">200</td>
+		 <td class="smallCol textRight">$200</td>
+		 </tr>
+		 */
+		for (int i = 0; i < 5; i++) {
+			tableInfos.append("<tr>");
+			tableInfos.append("<td class=\"smallCol\">06-22 12:12</td>");
+			tableInfos.append("<td class=\"smallCol\">09-22 12:12</td>");
+			tableInfos.append("<td class=\"bigCol\">aajakdfbkjadgfaehb</td>");
+			tableInfos.append("<td class=\"smallCol textRight\">200</td>");
+			tableInfos.append("<td class=\"smallCol textRight\">$200</td>");
+			tableInfos.append("</tr>");
+		}
+		oriHTML = oriHTML.replace("${FOR_EACH}", tableInfos.toString());
+		oriHTML = oriHTML.replace("${TOTAL}", "$1000");
+		log.info("oriHTML:{}", oriHTML);
+		return oriHTML;
 	}
 }
