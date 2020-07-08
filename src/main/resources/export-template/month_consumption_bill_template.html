@@ -14,7 +14,7 @@
             height: 100%;
         }
         .main {
-
+            widht: 1000px;
             height: 100%;
             box-sizing: border-box;
             margin: 0 auto;
@@ -28,7 +28,7 @@
             float: right;
         }
         .top .title {
-            position: relative;
+            /*position: relative;*/
             top: 10px;
             font-size: 40px;
             font-weight: 500;
@@ -83,8 +83,8 @@
 <div class="main">
     <div class="content">
         <div class="top">
-            <img src="./logo_fortnode.jpg" alt="logo" />
-            <span class="title fr">Bill</span>
+            <img src="logo_fortnode.jpg" alt="logo" />
+            <span class="title fr">BILL</span>
         </div>
         <div>14 Cliffwood Ave Suite 300</div>
         <div>
@@ -101,34 +101,8 @@
                 <th class="smallCol">Quantity</th>
                 <th class="smallCol">Price</th>
             </tr>
-            <!--${FOR_EACH}-->
-            <!--此处循环-->
-            <tr>
-                <td class="smallCol">06-22 12:12</td>
-                <td class="smallCol">09-22 12:12</td>
-                <td class="bigCol">aajakdfbkjadgfaehb</td>
-                <td class="smallCol">200</td>
-                <td class="smallCol">$200</td>
-            </tr>
-            <tr>
-                <td class="smallCol">06-22 12:12</td>
-                <td class="smallCol">09-22 12:12</td>
-                <td class="bigCol">aajakdfbkjadgfaehb</td>
-                <td class="smallCol">200</td>
-                <td class="smallCol">$200</td>
-            </tr><tr>
-            <td class="smallCol">06-22 12:12</td>
-            <td class="smallCol">09-22 12:12</td>
-            <td class="bigCol">aajakdfbkjadgfaehb</td>
-            <td class="smallCol">200</td>
-            <td class="smallCol">$200</td>
-        </tr><tr>
-            <td class="smallCol">06-22 12:12</td>
-            <td class="smallCol">09-22 12:12</td>
-            <td class="bigCol">aajakdfbkjadgfaehb</td>
-            <td class="smallCol">200</td>
-            <td class="smallCol">$200</td>
-        </tr>
+            ${FOR_EACH}
+
             <tr>
                 <td colspan="5">
                     <div class="totalPrice">Total(in USD):$2003</div>

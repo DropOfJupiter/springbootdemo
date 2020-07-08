@@ -6,9 +6,14 @@ import com.itextpdf.text.FontProvider;
 import com.itextpdf.text.pdf.BaseFont;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.ResourceUtils;
+import org.xhtmlrenderer.pdf.ITextOutputDevice;
+import org.xhtmlrenderer.pdf.ITextUserAgent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author qiutt
@@ -20,6 +25,7 @@ public class PdfExportUtils {
 
 	public static final String HTML_PATH = "G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\month_consumption_bill_template.html";
 	public static final String PDF_PATH = "G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\month_consumption_bill_template.pdf";
+	public static final String FONT_PATH = "G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\simsun.ttc";
 
 
 	/**
@@ -61,7 +67,8 @@ public class PdfExportUtils {
 
 
 	public static String initHTML() throws IOException {
-		String oriHTML = FileUtils.readFileToString(new File(HTML_PATH));
+		File template= ResourceUtils.getFile("classpath:export-template/month_consumption_bill_template.html");
+		String oriHTML = FileUtils.readFileToString(template);
 		log.info("oriHTML:{}", oriHTML);
 		oriHTML = oriHTML.replace("${BILL_DATE}", "05-2020");
 		oriHTML = oriHTML.replace("${EMAIL}", "useraccount@163.com");
@@ -80,8 +87,8 @@ public class PdfExportUtils {
 			tableInfos.append("<td class=\"smallCol\">06-22 12:12</td>");
 			tableInfos.append("<td class=\"smallCol\">09-22 12:12</td>");
 			tableInfos.append("<td class=\"bigCol\">aajakdfbkjadgfaehb</td>");
-			tableInfos.append("<td class=\"smallCol textRight\">200</td>");
-			tableInfos.append("<td class=\"smallCol textRight\">$200</td>");
+			tableInfos.append("<td class=\"smallCol\">200</td>");
+			tableInfos.append("<td class=\"smallCol\">$200</td>");
 			tableInfos.append("</tr>");
 		}
 		oriHTML = oriHTML.replace("${FOR_EACH}", tableInfos.toString());
