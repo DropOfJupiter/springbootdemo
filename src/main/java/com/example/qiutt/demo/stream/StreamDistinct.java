@@ -1,14 +1,15 @@
 package com.example.qiutt.demo.stream;
 
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.fastjson.JSON;
 import com.example.qiutt.demo.common.UserInfoModel;
+import com.example.qiutt.demo.utils.ReflectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeSet;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,5 +35,17 @@ public class StreamDistinct {
 		List<UserInfoModel> userInfoModels1=userInfoModels.stream()
 				.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(u ->u.getAge()))), ArrayList::new));
 		userInfoModels1.forEach(System.out::println);
+	}
+
+	@Test
+	public void test() throws IllegalAccessException {
+//		UserInfoModel userInfoModel= new UserInfoModel();
+//		userInfoModel.setFullName(null);
+		UserInfoModel userInfoModel=UserInfoModel.builder().fullName(null).build();
+		log.info("{}，{}",userInfoModel.toString(),userInfoModel.hashCode());
+		if(!ReflectUtils.checkFieldAllNull(userInfoModel)){
+			log.info("{}", JSON.parseObject(userInfoModel.toString(),UserInfoModel.class));
+		}
+
 	}
 }

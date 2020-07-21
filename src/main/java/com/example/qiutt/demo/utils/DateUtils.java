@@ -4,11 +4,13 @@
  */
 package com.example.qiutt.demo.utils;
 
+import com.example.qiutt.demo.common.CalculateConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,6 +66,24 @@ public class DateUtils {
 		DateFormat format = new SimpleDateFormat(pattern);
 		return format.parse(dateString);
 	}
+
+	/**
+	 * 获取本月最早时间
+	 *
+	 * @return
+	 */
+	public static Date getThisMonthFirstTime() {
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		calendar.setTime(date);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND,0);
+		return calendar.getTime();
+	}
+
 	/**
 	 * 日期格式化风格枚举类
 	 *
@@ -356,5 +376,35 @@ public class DateUtils {
 		ZonedDateTime zdt = localDateTime.atZone(zoneId);
 		Date date = Date.from(zdt.toInstant());
 		return  date;
+	}
+
+	/**
+	 * 获取当前月天数
+	 *
+	 * @param date 日期
+	 * @return {@link Integer} 天数
+	 */
+	public static Integer getCurrentMonthDays(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * 获取两个时间间隔的月份
+	 * <p>例如2017-07-03到2017-10-03 一共有三个月，分别是2017-07-03到2017-08-03；2017-08-03到2017-09-03；2017-09-03到2017-10-03；
+	 * <p>例如2017-07-03到2017-10-13 一共有3.355=(总天数/30天)个月，分别是2017-07-03到2017-08-03；2017-08-03到2017-09-03；2017-09-03到2017-10-03；2017-10-03到2017-10-13
+	 *
+	 * @param beginDate 开始时间
+	 * @param endDate   截止时间
+	 * @return {@link BigDecimal}
+	 */
+	public static BigDecimal getIntervalMonth(Date beginDate, Date endDate) {
+		Integer intervalDays = getIntervalDays(beginDate, endDate) + 1;
+		Double intervalDaysDouble = Double.valueOf(intervalDays);
+		Double double1 = Double.valueOf(30);
+		Double temp = (Double) (intervalDaysDouble / double1);
+		BigDecimal intervalMonths = BigDecimal.valueOf(temp).setScale(CalculateConstant.NORMAL_SCALE, CalculateConstant.NORMAL_ROUDING_MODE);
+		return intervalMonths;
 	}
 }

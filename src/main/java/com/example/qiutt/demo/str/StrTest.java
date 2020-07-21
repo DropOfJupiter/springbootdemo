@@ -74,6 +74,14 @@ public class StrTest {
 	}
 
 	@Test
+	public void test() throws ParseException {
+		Date consumptionBeginTime = DateUtils.strToDate("2020-07-01 00:00:00.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		if (DateUtils.getThisMonthFirstTime().after(consumptionBeginTime)) {
+			log.info("111");
+		}
+	}
+
+	@Test
 	public void getIntervalDays() throws ParseException {
 		Date consumptionBeginTime = DateUtils.strToDate("2020-06-11 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
 		Date consumptionEndTime = DateUtils.strToDate("2020-05-31 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);

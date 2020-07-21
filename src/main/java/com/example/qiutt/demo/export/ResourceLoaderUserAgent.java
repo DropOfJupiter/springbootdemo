@@ -31,17 +31,17 @@ public class ResourceLoaderUserAgent extends ITextUserAgent {
 		if (is == null) {
 			// Resource is on the classpath
 			try {
-				is = ResourceLoaderUserAgent.class.getResourceAsStream("export-template/" + fileName);
+				is = ResourceLoaderUserAgent.class.getResourceAsStream("/export-template/" + fileName);
 			} catch (Exception e) {
 			}
 
-			if (is == null) {
-				// Resource is in the file system
-				try {
-					is = new FileInputStream(new File("G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\" + fileName));
-				} catch (Exception e) {
-				}
-			}
+//			if (is == null) {
+//				// Resource is in the file system
+//				try {
+//					is = new FileInputStream(new File("G:\\IntelliJCode\\gitlab\\springbootdemo\\src\\main\\resources\\export-template\\" + fileName));
+//				} catch (Exception e) {
+//				}
+//			}
 			return is;
 		}
 		return is;

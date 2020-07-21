@@ -3,6 +3,7 @@ package com.example.qiutt.demo.collectors;
 import cn.hutool.json.JSONUtil;
 import com.example.qiutt.demo.stream.ConsumptPayType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -119,5 +120,29 @@ public class SetLearning {
 		set.forEach(s->{
 			log.info(""+s);
 		});
+	}
+
+	@Test
+	public void retainAll(){
+		Set<String> set1 = new HashSet<String>();
+		Set<String> set2 = new HashSet<String>();
+		set1.add("abc");
+		set1.add("123");
+		set1.add("ABC");
+//		set2.add("abc1");
+//		set2.add("abc2");
+//		set2.add("abc3");
+		//此处注意，retainAll之后，set1的内容将会发生改变，改变为两个集合的交集内容，
+		//如不想set1的内容发生改变，则新建一个List保存
+		set2.retainAll(set1);
+		System.out.println("交集元素个数是："+set2.size());
+	}
+
+	@Test
+	public void retainAll1(){
+		String str="1,2,3";
+		String[] strs=str.split(",");
+		Integer[] array = (Integer[]) ConvertUtils.convert(strs, Integer.class);
+		log.info("{}",array.toString());
 	}
 }
