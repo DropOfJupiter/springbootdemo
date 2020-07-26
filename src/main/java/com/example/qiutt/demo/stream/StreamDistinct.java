@@ -3,6 +3,7 @@ package com.example.qiutt.demo.stream;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.example.qiutt.demo.common.UserInfoModel;
+import com.example.qiutt.demo.enums.MaxValueMultipleEnum;
 import com.example.qiutt.demo.utils.ReflectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -47,5 +48,10 @@ public class StreamDistinct {
 			log.info("{}", JSON.parseObject(userInfoModel.toString(),UserInfoModel.class));
 		}
 
+	}
+	@Test
+	public void fromEnum(){
+		String str="FOUR_TIMES_BASE_VALUE";
+		log.info("{}", MaxValueMultipleEnum.valueOf(str).getCode());
 	}
 }
