@@ -9,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author qiutt
@@ -79,6 +81,14 @@ public class StrTest {
 		if (DateUtils.getThisMonthFirstTime().after(consumptionBeginTime)) {
 			log.info("111");
 		}
+		Map<String,Integer> map=new HashMap<>();
+		map.put("1",1);
+		if(map.containsKey("1")){
+			Integer integer=map.get("1");
+			integer=11;
+			map.put("1",integer);
+		}
+		log.info("{}",map.get("1"));
 	}
 
 	@Test

@@ -41,5 +41,30 @@ public class DateTest {
 
 	}
 
+	@Test
+	public void getIntervalHours() throws ParseException {
+		Date time = DateUtils.strToDate("2020-05-09 10:42:17.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		Date time1 = DateUtils.strToDate("2020-06-08 15:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
+		Long millisecond=time1.getTime()-time.getTime();//毫秒差
+		Float hours=millisecond/1000/60/60f;
+		log.info("{}",millisecond);
+		log.info("{}",hours);
+		log.info("{}",BigDecimal.valueOf(millisecond));
 
+		log.info("{}",BigDecimal.valueOf(hours));
+
+		log.info("{}",BigDecimal.valueOf(0.2).setScale(0,BigDecimal.ROUND_UP));
+//		BigDecimal value=BigDecimal.valueOf(52.205);
+//		Double double1=value.doubleValue();
+//		log.info("double1 {}",double1);
+//		log.info("double1 {}",value.longValue());
+//		Long part1=value.longValue();
+//		BigDecimal value1=value.subtract(BigDecimal.valueOf(part1));
+//		Long part2=value1.longValue();
+//		log.info("part1 {}",part1);
+//		log.info("part2 {}",value1.toString());
+
+
+
+	}
 }
