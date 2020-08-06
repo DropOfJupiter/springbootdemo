@@ -1,5 +1,8 @@
 package com.example.qiutt.demo.str;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.example.qiutt.demo.common.UserInfoBean;
 import com.example.qiutt.demo.utils.DateUtils;
 import com.example.qiutt.demo.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -97,5 +100,22 @@ public class StrTest {
 		Date consumptionEndTime = DateUtils.strToDate("2020-05-31 23:59:59.000", DateUtils.DateStyle.YYYY_MM_DD_HH_MM_SS);
 		consumptionEndTime=new Date();
 		log.info("getIntervalDays:{}",DateUtils.getIntervalDays(consumptionBeginTime,consumptionEndTime)+1);
+	}
+
+	@Test
+	public void replaceTest(){
+		String string="支付宝国际版";
+		if(string.endsWith("支付")){
+			string=string.substring(0,string.length()-2);
+		}
+		log.info("string：{}",string);
+	}
+
+	@Test
+	public void json(){
+		String userInfoStr="{\"deleteFlag\":false,\"createTime\":1514736000000,\"phone\":\"15363322212\",\"enable\":true,\"fullName\":\"admin\",\"updateTime\":1596506468928,\"userIdentity\":\"SUPER\",\"userName\":\"admin\",\"userId\":1,\"userPower\":\"MANAGEMENT\",\"email\":\"admin@qq.com\"}";
+		UserInfoBean redisUserInfo = JSONObject.parseObject(userInfoStr, UserInfoBean.class);
+		log.info("{}", JSON.toJSONString(redisUserInfo));
+
 	}
 }

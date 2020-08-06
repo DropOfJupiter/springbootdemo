@@ -7,6 +7,10 @@ package com.example.qiutt.demo.utils;
 import com.example.qiutt.demo.common.CalculateConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -311,6 +315,25 @@ public class DateUtils {
 		return lastDayOfMonth;
 	}
 
+	/**
+	 * 获得一个月份的最后一天的23时59分59秒 例如： 传如的时间为 2017-07 ，得到时间为 2017-07-01:23:59:59
+	 *
+	 * @param date 日期 yyyy-MM
+	 * @return {@link Date} yyyy-MM-dd 23:59:59
+	 */
+	public static Date getLastDayOfMonth(Date date) {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		Date lastDayOfMonth = calendar.getTime();
+		return lastDayOfMonth;
+	}
+
 	public static Integer getDayOfWeek(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -406,5 +429,54 @@ public class DateUtils {
 		Double temp = (Double) (intervalDaysDouble / double1);
 		BigDecimal intervalMonths = BigDecimal.valueOf(temp).setScale(CalculateConstant.NORMAL_SCALE, CalculateConstant.NORMAL_ROUDING_MODE);
 		return intervalMonths;
+	}
+
+	public static BigDecimal getIntervalMonth(DateTime start, DateTime end) {
+		int months = Months.monthsBetween(start, end).getMonths()+1;
+		return BigDecimal.valueOf(months);
+	}
+
+
+	/**
+	 * 获取两个时间间隔几个自然月 <p>
+	 * 例如2017-07-03到2017-10-03 一共有经过了四个月，分别是2017-07,2017-08,2017-09,2017-10
+	 *
+	 * @param beginDate 开始日期
+	 * @param endDate   截止日期
+	 * @return {@link Integer}
+	 */
+	public static Integer getIntervalNaturalMonth(Date beginDate, Date endDate) throws ParseException {
+		final String pattern = "yyyy-MM-dd";
+		final String formatBeginDate = dateToString(beginDate, pattern);
+		final String formatEndDate = dateToString(endDate, pattern);
+		beginDate = stringToDate(formatBeginDate, pattern);
+		endDate = stringToDate(formatEndDate, pattern);
+		Calendar calbegin = Calendar.getInstance();
+		calbegin.setTime(beginDate);
+		// 获得开始日期月份
+		int monthBegin = calbegin.get(Calendar.MONTH) + 1;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(endDate);
+		// 获得结束日期月份
+		int monthEnd = calendar.get(Calendar.MONTH) + 1;
+		int checkmonth = monthEnd - monthBegin + (calendar.get(Calendar.YEAR) - calbegin.get(Calendar.YEAR)) * 12;
+		checkmonth += 1;
+		return Math.abs(checkmonth);
+	}
+	/**
+	 * 获得一个月份的第一天的0时0分0秒 例如： 传如的时间为 2017-07 ，得到时间为 2017-07-01 ：00:00:00
+	 *
+	 * @param date 日期 yyyy-MM
+	 * @return {@link Date} yyyy-MM-01 00:00:00
+	 */
+	public static Date getFirstDayOfMonth(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		Date firstDayOfMonth = calendar.getTime();
+		return firstDayOfMonth;
 	}
 }
