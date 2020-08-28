@@ -31,15 +31,15 @@ public class StringObject {
 	@Test
 	public void test1(){
 		String s3 = new String("xyz");//因为常量池中没有，所以会在常量池中创建"xyz"对象，然后因为有new，所以在堆上创建对象，s3指向的是堆上创建的"xyz"
-		String s4 = new String("xyz");//因为常量池中没有，所以不会在常量池中创建"xyz"对象，然后因为有new，所以在堆上创建对象，s4指向的是堆上创建的"xyz"
+		String s4 = new String("xyz");//因为常量池中有，所以不会在常量池中创建"xyz"对象，然后因为有new，所以在堆上创建对象，s4指向的是堆上创建的"xyz"
 		System.out.println(s3==s4);//因此s3和s4分别指向堆上的两个不同"xyz"对象，所以结果是false
 	}
 
 	@Test
 	public void test2(){
-		String s3 = "xyz";//s3指向常量池中的"xyz"
-		String s4 = new String("xyz");//因为常量池中已经有xyz了，所以不会在常量池中创建，但是都会在堆上创建对象，s4指向堆上创建的"xyz"
-		System.out.println(s3==s4);//所以是false
+		String s5 = "123";//s5指向常量池中的"123"
+		String s6 = new String("123");//因为常量池中已经有xyz了，所以不会在常量池中创建，但是都会在堆上创建对象，s6指向堆上创建的"123"
+		System.out.println(s5==s6);//所以是false
 
 
 	}
