@@ -166,6 +166,18 @@ public class StreamLearning {
 		return userInfoModels;
 	}
 
-
-
+	@Test
+	public void update() {
+		List<UserInfoModel> userInfoModels=init();
+		userInfoModels.stream().map(userInfoModel -> {
+			userInfoModel.setAge(11);
+			return userInfoModel;
+		});
+		for(UserInfoModel model:userInfoModels){
+			model.setAge(12);
+		}
+		userInfoModels.forEach(p -> {
+			log.info("修改 用户年龄{}", p.getAge());
+		});
+	}
 }

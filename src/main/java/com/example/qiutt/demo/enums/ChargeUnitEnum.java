@@ -6,6 +6,7 @@ package com.example.qiutt.demo.enums;
  * @create 2020-07-28 15:09
  */
 public enum ChargeUnitEnum {
+	SECOND("Second", "秒"),
 	MINUTE("Minute", "分"),
 	HOUR("Hour", "时"),
 	DAY("Day", "日"),

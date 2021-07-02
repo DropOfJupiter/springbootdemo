@@ -5,12 +5,10 @@
 package com.example.qiutt.demo.utils;
 
 import com.example.qiutt.demo.common.CalculateConstant;
+import com.example.qiutt.demo.enums.ChargeUnitEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Months;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +16,9 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -429,6 +430,54 @@ public class DateUtils {
 		Double temp = (Double) (intervalDaysDouble / double1);
 		BigDecimal intervalMonths = BigDecimal.valueOf(temp).setScale(CalculateConstant.NORMAL_SCALE, CalculateConstant.NORMAL_ROUDING_MODE);
 		return intervalMonths;
+	}
+
+	public static BigDecimal getIntervals(Date start, Date end, ChargeUnitEnum chargeUnit) {
+		Integer intervals=-1;
+		DateTime startTime=new DateTime(start);
+		DateTime endTime=new DateTime(end);
+		switch(chargeUnit){
+			case SECOND:
+				intervals=Seconds.secondsBetween(startTime, endTime).getSeconds();
+				break;
+			case MINUTE:
+				intervals= Minutes.minutesBetween(startTime,endTime).getMinutes();
+				break;
+			case HOUR:
+				intervals=Hours.hoursBetween(startTime,endTime).getHours();
+				break;
+			case DAY:
+				intervals=Days.daysBetween(startTime,endTime).getDays();
+				break;
+			case MONTH:
+				intervals=Months.monthsBetween(startTime, endTime).getMonths();
+				break;
+			default:
+				break;
+		}
+		//不足的也往上加，例如不足一天也算一天
+		intervals=intervals+1;
+		return BigDecimal.valueOf(intervals);
+	}
+
+	public static int getBillingIntervalDays(Date date, Date otherDate) {
+		if (date != null && otherDate != null) {
+			Calendar from = Calendar.getInstance();
+			from.setTimeInMillis(date.getTime());
+			from.set(11, 0);
+			from.set(12, 0);
+			from.set(13, 0);
+			from.set(14, 0);
+			Calendar to = Calendar.getInstance();
+			to.setTimeInMillis(otherDate.getTime());
+			to.set(11, 23);
+			to.set(12, 59);
+			to.set(13, 59);
+			to.add(13, 1);
+			return (int)Math.abs((to.getTimeInMillis() - from.getTimeInMillis()) / 86400000L);
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	public static BigDecimal getIntervalMonth(DateTime start, DateTime end) {

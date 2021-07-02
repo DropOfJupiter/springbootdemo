@@ -71,4 +71,18 @@ public class ListLearning {
 		log.info("list删除空记录后大小：{}", list.size());
 
 	}
+
+	@Test
+	public void addAll(){
+		ArrayList<Integer> list1=new ArrayList<>();
+		for(int i=0;i<5;i++){
+			list1.add(i);
+		}
+		ArrayList<Integer> list2=new ArrayList<>();
+		for(int i=10;i<15;i++){
+			list2.add(i);
+		}
+		list1.addAll(list2);
+		log.info("{},{}",list1.size(),list2.size());
+	}
 }

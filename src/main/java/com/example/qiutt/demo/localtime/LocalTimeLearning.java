@@ -4,6 +4,7 @@ import com.example.qiutt.demo.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -69,5 +70,15 @@ public class LocalTimeLearning {
 		log.info("getLastDayOfMonth:{}",DateUtils.getLastDayOfMonth("2019-01","-"));
 
 		log.info("begin.getTime():{}",begin.getTime());
+	}
+
+	@Test
+	public void test1() {
+		try {
+			Date time=DateUtils.strToDate("2020-08-30 16:04:55.000", DateUtils.DateStyle.YYYY_MM);
+			Date time1= DateUtils.getLastDayOfMonth(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 }
